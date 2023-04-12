@@ -11,7 +11,7 @@ export default function Button({ color, size, children }) {
 		color,
 		fontSize: Button.sizes[size],
 	};
-
+	
 	const onClick = () => {
 		console.log('Button clicked!');
 	};
