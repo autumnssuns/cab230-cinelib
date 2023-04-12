@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+# React client on port 3000, depends on the server
+  client:
+    image: test-client
+    build:
+      context: client
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
+# Express server on port 3001
+  server:
+    image: test-server
+    build:
+      context: server
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3001:3001

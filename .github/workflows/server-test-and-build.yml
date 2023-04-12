@@ -1,0 +1,35 @@
+# Server-side API tests with Jest
+name: Server Jest Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    defaults:
+      run:
+        working-directory: ./server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install
+
+      # Start the server
+      - run: npm run start & sleep 5 # Wait for server to start
+
+      # Run tests
+      - run: npm run test
+
+      # Make the current directory available as a GitHub Actions artifact
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: server
+          path: |
+            ./server
+            !./server/node_modules
+          retention-days: 30

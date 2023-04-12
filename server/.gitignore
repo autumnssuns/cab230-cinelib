@@ -1,0 +1,4 @@
+# Git ignore for express server
+
+/node_modules
+npm-debug.log*
