@@ -1,0 +1,40 @@
+.movies-banner-container {
+    display: flex;
+    overflow: hidden;
+    width: 75%;
+    margin: 0 auto;
+}
+  
+.banner-cell {
+    --tilt-cut: 40px;
+    min-width: 200px;
+    height: 75vh;
+    margin-right: -35px;
+    clip-path: polygon(var(--tilt-cut) 0, 0% 100%, calc(100% - var(--tilt-cut)) 100%, 100% 0%);
+}
+
+.banner-cell:hover{
+    clip-path: polygon(0 0, 0% 100%, 100% 100%, 100% 0%);
+    transition: clip-path 0.2s ease-in-out;
+    z-index: 1;
+}
+
+.banner-cell > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(2px) brightness(0.25);
+    border: 3px solid var(--color-primary-dark);
+    z-index: 0;
+}
+
+.banner-cell > img:hover {
+    filter: blur(0) brightness(1);
+    transition: filter 0.2s ease-in-out;
+    border: 3px solid var(--color-primary-light);
+    transition: border 0.2s ease-in-out;
+}
+
+.banner-cell:last-child {
+margin-right: 0;
+}

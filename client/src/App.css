@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,27 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+.App {
+  --color-background: rgb(31, 31, 31);
+  --color-primary: rgb(219, 40, 40);
+  --color-primary-light: rgb(255, 64, 64);
+  --color-primary-dark: rgb(161, 25, 25);
+  --color-secondary: rgb(242, 113, 28);
+  --color-secondary-light: rgb(255, 161, 51);
+  --color-secondary-dark: rgb(180, 77, 0);
+  --color-tertiary: rgb(212, 175, 55);
+  --color-tertiary-light: rgb(232, 216, 67);
+  --color-tertiary-dark: rgb(168, 143, 45);
+  --color-text: rgb(245, 245, 245);
+  --color-text-light: rgb(255, 255, 255);
+  --color-text-dark: rgb(194, 194, 194);
+  --color-accent: rgb(255, 163, 158);
+  --color-success: rgb(82, 196, 26);
+  --color-warning: rgb(250, 173, 20);
+  --color-error: rgb(245, 34, 45);
+  background-color: var(--color-background);
+  width: 100%;
+  height: 100%;
 }
