@@ -3,6 +3,7 @@
     overflow: hidden;
     width: 75%;
     margin: 0 auto;
+    cursor: pointer;
 }
   
 .banner-cell {

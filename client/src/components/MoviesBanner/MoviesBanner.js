@@ -1,6 +1,8 @@
 import './MoviesBanner.css'
+import { useNavigate } from 'react-router-dom'
 
 export default function MoviesBanner({movies, details}){
+    const navigate = useNavigate();
     // Filter for movies whose ID is in details
     movies = movies.filter(movie => details[movie.imdbID])
 
@@ -8,7 +10,10 @@ export default function MoviesBanner({movies, details}){
         <div className="movies-banner-container">
             {
                 movies.map((movie, index) => {
-                    return <div className="banner-cell">
+                    return <div className="banner-cell"
+                        key={index}
+                        onClick={() => navigate(`/movies/data/${movie.imdbID}`)}
+                    >
                         <img src={details[movie.imdbID].poster}/>
                     </div>
                 })

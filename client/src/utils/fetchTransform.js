@@ -6,7 +6,12 @@ import { movies } from '../mocks/movie.search.js';
  * @param {string} endpoint The endpoint to fetch data from, e.g. '/movies/search'.
  * @param {function} transformer A function that transforms the json data into a JavaScript object.
  */
-export async function getEndpoint(endpoint, token, transformer = (data) => data) {
+export async function getEndpoint(
+    endpoint, 
+    token, 
+    transformer = (data) => data,
+    signal = null // AbortSignal for cancelling the request.
+    ) {
     // Extract the base API URL from the app config file.
     const { BASE_API_URL } = await import('../app.config.json');
 
@@ -26,7 +31,8 @@ export async function getEndpoint(endpoint, token, transformer = (data) => data)
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                }
+                },
+                signal: signal
             });
         }
         const data = await response.json();
