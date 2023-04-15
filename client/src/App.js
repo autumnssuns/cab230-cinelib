@@ -6,8 +6,11 @@ import HomePage from './pages/HomePage';
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import { CacheContext } from './contexts/CacheContext';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
+  console.log("App Rendered")
+
   const emptyUser = {
     loggedIn: false,
     username: '',
@@ -52,19 +55,20 @@ function App() {
   } , emptyUser);
 
   return (
-    <div className="App">
-      <CacheContext.Provider value={{user, updateUser}}>
+    <CacheContext.Provider value={{user, updateUser}}>
+      <div className="App">
         <NavBar/>
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage/>} />
+            <Route path="/register" element={<RegisterPage/>} />
             <Route path="*" element={<div>404 Not Found</div>} />
           </Routes>
         </main>
-      </CacheContext.Provider>
-      <Footer/>
-    </div>
+        <Footer/>
+      </div>
+    </CacheContext.Provider>
   );
 }
 

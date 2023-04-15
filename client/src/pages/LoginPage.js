@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Form,
   FormGroup,
@@ -6,14 +6,37 @@ import {
   Input,
   Button
 } from 'reactstrap';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { postEndpoint } from '../utils/fetchTransform';
+import { CacheContext } from '../contexts/CacheContext';
+import { hashPassword } from '../utils/hash';
 
 export default function LoginPage(){
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectUrl = searchParams.get('redirectUrl') || '/';
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-  
+    const { updateUser } = useContext(CacheContext);
+
     const handleSubmit = (e) => {
       e.preventDefault();
-      // Your login logic here
+      const hashedPassword = hashPassword(email, password);
+
+      postEndpoint('/user/login', {
+          email: email,
+          password: hashedPassword,
+          longExpiry: false,
+      }).then((res) => {
+          if (res.error) {
+              console.log(res.error);
+              return;
+          }
+          const updates = {loggedIn: true, username: email, ...res};
+          updateUser(updates);
+          navigate(redirectUrl);
+      });
     };
   
     return (
