@@ -6,11 +6,12 @@
 }
   
 .banner-cell {
-    --tilt-cut: 40px;
+    --tilt-cut: 20%;
     min-width: 200px;
     height: 75vh;
-    margin-right: -35px;
+    margin-right: -2%;
     clip-path: polygon(var(--tilt-cut) 0, 0% 100%, calc(100% - var(--tilt-cut)) 100%, 100% 0%);
+    transition: clip-path 0.2s ease-in-out;
 }
 
 .banner-cell:hover{
@@ -25,13 +26,14 @@
     object-fit: cover;
     filter: blur(2px) brightness(0.25);
     border: 3px solid var(--color-primary-dark);
-    z-index: 0;
+    transition: filter 0.2s ease-in-out;
+    transition: border 0.2s ease-in-out;
 }
 
 .banner-cell > img:hover {
     filter: blur(0) brightness(1);
-    transition: filter 0.2s ease-in-out;
     border: 3px solid var(--color-primary-light);
+    transition: filter 0.2s ease-in-out;
     transition: border 0.2s ease-in-out;
 }
 

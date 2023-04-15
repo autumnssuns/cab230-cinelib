@@ -1,16 +1,11 @@
 <!-- Replace repository name -->
 
-[![Client Playwright Tests](https://github.com/autumnssuns/react-express-fullstack/actions/workflows/client-test-and-build.yml/badge.svg)](https://github.com/autumnssuns/react-express-fullstack/actions/workflows/client-test-and-build.yml)
+[![Client Playwright Tests](https://github.com/autumnssuns/cinehub-cab230/actions/workflows/client-test-and-build.yml/badge.svg)](https://github.com/autumnssuns/cinehub-cab230/actions/workflows/client-test-and-build.yml)
 
-[![Server Jest Tests](https://github.com/autumnssuns/react-express-fullstack/actions/workflows/server-test-and-build.yml/badge.svg)](https://github.com/autumnssuns/react-express-fullstack/actions/workflows/server-test-and-build.yml)
+[![Server Jest Tests](https://github.com/autumnssuns/cinehub-cab230/actions/workflows/server-test-and-build.yml/badge.svg)](https://github.com/autumnssuns/cinehub-cab230/actions/workflows/server-test-and-build.yml)
 
-# React Express Fullstack Template
+# CAB230 Web Computing Project - Cinehub
 
-This is a template for a full-stack web application built with React and Express.js. It is a work in progress, and is intended to be used as a starting point for new projects.
-
-This project comes with a GitHub Actions workflow that runs the client and server tests and creates automated releases when the `main` branch is updated.
-
-Additionally, the project is containerized using Docker, and can be run locally using Docker Compose.
 
 ## Technology
 

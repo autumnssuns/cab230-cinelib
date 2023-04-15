@@ -2,6 +2,11 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    gap: 50px;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+.movie-grid-container:hover .movie-card:not(:hover) {
+    filter: grayscale(85%) brightness(0.5);
+    opacity: 0.75;
 }

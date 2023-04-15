@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchTransform } from '../utils/fetchTransform';
+import { getEndpoint } from '../utils/fetchTransform';
 import { useDetailedMovies } from '../hooks/useDetailedMovies';
 import MovieCard from '../components/MovieCard/MovieCard';
 import MovieGrid from '../components/MovieGrid/MovieGrid';
@@ -20,7 +20,7 @@ export default function HomePage(){
 
     return (
         <>
-            <MoviesBanner/>
+            <MoviesBanner movies={movies} details={details}/>
             <MovieGrid movies={movies} details={details}/>
         </>
     )
