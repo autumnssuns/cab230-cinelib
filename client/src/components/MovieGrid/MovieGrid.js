@@ -2,8 +2,6 @@ import MovieCard from "../MovieCard/MovieCard"
 import './MovieGrid.css'
 
 export default function MovieGrid({movies, details}){
-    console.log(movies)
-    console.log(details)
     return (
         <div className="movie-grid-container">
             {

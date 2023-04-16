@@ -7,7 +7,8 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import { CacheContext } from './contexts/CacheContext';
 import RegisterPage from './pages/RegisterPage';
-import MoviePage from './pages/MoviePage';
+import MovieDataPage from './pages/MovieDataPage';
+import MoviesPage from './pages/MoviesPage';
 
 function App() {
   console.log("App Rendered")
@@ -62,9 +63,10 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/movies" element={<MoviesPage />} />
             <Route path="/login" element={<LoginPage/>} />
             <Route path="/register" element={<RegisterPage/>} />
-            <Route path="/movies/data/:imdbID" element={<MoviePage/>} />
+            <Route path="/movies/data/:imdbID" element={<MovieDataPage/>} />
             <Route path="*" element={<div>404 Not Found</div>} />
           </Routes>
         </main>

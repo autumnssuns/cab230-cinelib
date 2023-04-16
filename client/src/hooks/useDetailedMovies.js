@@ -63,7 +63,6 @@ export function useDetailedMovies({title, year, page}){
      * @returns The transformed movies with added data.
      */
     const transformer = useCallback((movies, abortSignal) => {
-        console.log(movies)
         // Show all movies' names before loading the details.
         setMovies(movies.data);
   

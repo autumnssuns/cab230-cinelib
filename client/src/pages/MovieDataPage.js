@@ -4,7 +4,7 @@ import { Badge } from "reactstrap";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import './MoviePage.css'
+import './MovieDataPage.css'
 
 function formatCurrency(number) {
     return new Intl.NumberFormat('en-US', 
@@ -15,7 +15,7 @@ function formatCurrency(number) {
     }).format(number)
 }
 
-export default function MoviePage(){
+export default function MovieDataPage(){
     const { imdbID } = useParams();
     const [movie, setMovie] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
