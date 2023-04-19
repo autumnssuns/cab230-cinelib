@@ -1,5 +1,6 @@
 import './App.css';
 import { useReducer } from 'react';
+import jwt from 'jwt-decode'
 import Footer from './components/Footer/Footer';
 import NavBar from './components/NavBar/NavBar';
 import HomePage from './pages/HomePage';
@@ -59,6 +60,25 @@ function App() {
       ...validUpdates,
     };
   } , emptyUser);
+
+  // Check if the user has a refresh token in local storage
+  // If so, attempt to refresh the bearer token
+  if (!user.loggedIn && localStorage.getItem('refreshToken')) {
+    postEndpoint('/user/refresh', {
+      refreshToken: localStorage.getItem('refreshToken'),
+    }).then((res) => {
+      if (res.error) {
+        console.log(res.error);
+        return;
+      }
+      // Decode the bearer token to get the username
+      const decoded = jwt(res.bearerToken.token);
+      const username = decoded.email;
+
+      const updates = {loggedIn: true, username, ...res};
+      updateUser(updates);
+    });
+  }
 
   return (
     <CacheContext.Provider value={{user, updateUser}}>
