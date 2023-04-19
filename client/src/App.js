@@ -11,6 +11,7 @@ import RegisterPage from './pages/RegisterPage';
 import MovieDataPage from './pages/MovieDataPage';
 import MoviesPage from './pages/MoviesPage';
 import { postEndpoint } from './utils/fetchTransform';
+import PersonDataPage from './pages/PersonDataPage';
 
 function App() {
   console.log("App Rendered")
@@ -74,8 +75,8 @@ function App() {
       // Decode the bearer token to get the username
       const decoded = jwt(res.bearerToken.token);
       const username = decoded.email;
-
       const updates = {loggedIn: true, username, ...res};
+      console.log(updates)
       updateUser(updates);
     });
   }
@@ -91,6 +92,7 @@ function App() {
             <Route path="/login" element={<LoginPage/>} />
             <Route path="/register" element={<RegisterPage/>} />
             <Route path="/movies/data/:imdbID" element={<MovieDataPage/>} />
+            <Route path="/people/:id" element={<PersonDataPage/>} />
             <Route path="*" element={<div>404 Not Found</div>} />
           </Routes>
         </main>
