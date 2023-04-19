@@ -1,5 +1,5 @@
 import { getEndpoint } from "../utils/fetchTransform";
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { useEffect, useState, useContext, useRef, useReducer } from "react";
 import { CacheContext } from "../contexts/CacheContext";
 import { AgGridReact } from "ag-grid-react";
@@ -10,7 +10,7 @@ import "./PersonDataPage.css";
 
 export default function PersonDataPage(){
     const { id } = useParams();
-
+    const navigate = useNavigate();
     const [options, updateOptions] = useReducer((current, update) => {
         const newOptions = {...current, ...update};
         return newOptions;
@@ -66,9 +66,9 @@ export default function PersonDataPage(){
     );
     const [person, setPerson] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const {user} = useContext(CacheContext);
     const [roles, setRoles] = useState(null);
-    const [ratings, setRatings] = useState(null);
 
     const columns = [
         { 
@@ -113,6 +113,11 @@ export default function PersonDataPage(){
         ).then((res) => {
             if (res.error) {
                 console.log(res.error);
+                if (res.message == "Authorization header ('Bearer token') not found") {
+                    // If the user is not logged in, redirect them to the login page
+                    navigate("/login?redirectUrl=/people/data/" + id);
+                }
+                setError(true);
                 return;
             }
             setPerson(res);

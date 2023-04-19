@@ -4,12 +4,27 @@ import {
   FormGroup,
   Label,
   Input,
-  Button
+  Button,
+  Alert
 } from 'reactstrap';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { postEndpoint } from '../utils/fetchTransform';
 import { CacheContext } from '../contexts/CacheContext';
 import { hashPassword } from '../utils/hash';
+
+export function MessageFromParams(searchParams){
+  // If the RedirectUrl contains /people/data, show a message
+  // that the user needs to login to view the data
+  const redirectUrl = searchParams.get('redirectUrl') || '/';
+  if (redirectUrl.includes('/people/data')) {
+    return (
+      <Alert color="info">
+        This page is only available to members. Please login or <Link to={`/register?redirectUrl=${redirectUrl}`}>register</Link> to view the data.
+      </Alert>
+    );
+  }
+  return null;
+}
 
 export default function LoginPage(){
     const navigate = useNavigate();
@@ -40,6 +55,9 @@ export default function LoginPage(){
     };
   
     return (
+      <div>
+      <h1>Login</h1>
+      {MessageFromParams(searchParams)}
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label for="email">Email</Label>
@@ -65,5 +83,7 @@ export default function LoginPage(){
         </FormGroup>
         <Button type="submit" color="primary">Login</Button>
       </Form>
+      <p>Don't have an account? <Link to={`/register?redirectUrl=${redirectUrl}`}>Register</Link></p>
+      </div>
     );
 }
