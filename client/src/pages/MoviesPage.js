@@ -142,7 +142,7 @@ export default function MoviesPage(){
                     }).then((data) => {
                         if (!data) return;
                         movies = data.data;
-                        params.successCallback(movies, 9_000_000);
+                        params.successCallback(movies, pagination.total);
                     }).then(() => {
                         // gridRef.current.columnApi.autoSizeColumn("title");
                     });
