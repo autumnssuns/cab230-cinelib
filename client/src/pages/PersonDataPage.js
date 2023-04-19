@@ -115,7 +115,7 @@ export default function PersonDataPage(){
                 console.log(res.error);
                 if (res.message == "Authorization header ('Bearer token') not found") {
                     // If the user is not logged in, redirect them to the login page
-                    navigate("/login?redirectUrl=/people/data/" + id);
+                    navigate("/login?redirectUrl=/people/" + id);
                 }
                 setError(true);
                 return;
