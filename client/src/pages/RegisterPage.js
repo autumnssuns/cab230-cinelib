@@ -6,6 +6,7 @@ import {
   Input,
   Button
 } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
 import { postEndpoint } from '../utils/fetchTransform';
 import { hashPassword } from '../utils/hash';
 
@@ -13,7 +14,7 @@ export default function RegisterPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
-
+    const navigate = useNavigate();
     const handleSubmit = (e) => {
         e.preventDefault();
         const hashedPassword = hashPassword(email, password);
@@ -22,8 +23,15 @@ export default function RegisterPage(){
             password: hashedPassword,
         })
         .then((res) => {
+            if (res.error) {
+                console.log(res.error);
+                return;
+            }
+            navigate('/login/');
             console.log(res);
-        })
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     return (
