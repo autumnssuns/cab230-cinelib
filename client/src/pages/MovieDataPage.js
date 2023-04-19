@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { Badge } from "reactstrap";
 import { AgGridReact } from 'ag-grid-react';
@@ -42,7 +42,10 @@ export default function MovieDataPage(){
             headerName: "Name", 
             field: "name", 
             sortable: true, 
-            filter: true
+            filter: true,
+            cellRenderer: (params) => {
+                return <Link to={`/people/${params.data.id}`}>{params.value}</Link>;
+            }
         },
         {
             headerName: "Characters", 

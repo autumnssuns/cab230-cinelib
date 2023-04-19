@@ -80,14 +80,16 @@ export default function PersonDataPage(){
         },
         { 
             field: "movieName", 
-            headerName: "Movie", 
+            headerName: "Movie",
+            resizable: true,
             cellRenderer: (params) => {
                 return <Link to={`/movies/data/${params.data.movieId}`}>{params.value}</Link>;
             }
         },
         { 
             field: "characters", 
-            headerName: "Characters", 
+            headerName: "Characters",
+            resizable: true,
             cellRenderer: (params) => {
                 console.log(params.value);
                 return params.value.join(", ");
@@ -95,7 +97,8 @@ export default function PersonDataPage(){
         },
         { 
             field: "imdbRating", 
-            headerName: "IMDB Rating"
+            headerName: "IMDB Rating",
+            resizable: true,
         }
     ]
 
@@ -139,7 +142,6 @@ export default function PersonDataPage(){
                     columnDefs={columns}
                     pagination={true}
                     paginationPageSize={10}
-                    paginationNumberFormatter={(params) => params.value.toLocaleString()}
                 />
             </div>
             <div className="ratings-chart-container">
