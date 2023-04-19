@@ -52,6 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@playwright/test": "^1.32.3"
+    "@playwright/test": "^1.32.3",
+    "@wixc3/react-board": "^2.1.3"
   }
 }

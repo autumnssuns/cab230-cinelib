@@ -9,6 +9,7 @@ import { CacheContext } from './contexts/CacheContext';
 import RegisterPage from './pages/RegisterPage';
 import MovieDataPage from './pages/MovieDataPage';
 import MoviesPage from './pages/MoviesPage';
+import { postEndpoint } from './utils/fetchTransform';
 
 function App() {
   console.log("App Rendered")
@@ -41,6 +42,9 @@ function App() {
     // and remove the refresh token from local storage
     if (current.loggedIn && !validUpdates.loggedIn) {
       localStorage.removeItem('refreshToken');
+      postEndpoint('/user/logout', {
+        refreshToken: current.refreshToken.token,
+      });
       return emptyUser;
     }
     
