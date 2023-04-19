@@ -67,7 +67,7 @@ export function useDetailedMovies({title, year, page}){
         setMovies(movies.data);
   
         // Fetches the movies in batches. The first batch is larger than the subsequent batches.
-        const INITIAL_FETCH_LIMIT = 1;
+        const INITIAL_FETCH_LIMIT = 10;
         const INITIAL_FETCH_DELAY = 1800 * INITIAL_FETCH_LIMIT; // Approximately 1.8 seconds per request.
   
         const SUBSEQUENT_FETCH_LIMIT = 1;
