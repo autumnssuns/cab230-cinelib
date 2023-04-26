@@ -36,6 +36,9 @@ export async function getEndpoint(
             });
         }
         const data = await response.json();
+        if (data.error){
+            throw new Error(data.message);
+        }
         return transformer(data);
     }
     catch (error) {
@@ -69,6 +72,9 @@ export async function postEndpoint(endpoint, body){
             });
         }
         const data = await response.json();
+        if (data.error){
+            throw new Error(data.message);
+        }
         return data;
     }
     catch (error) {
