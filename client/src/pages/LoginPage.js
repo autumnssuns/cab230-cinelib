@@ -26,6 +26,14 @@ export function MessageFromParams(searchParams){
   return null;
 }
 
+export function ErrorMessage(message){
+  return (
+    <Alert color="danger">
+      {message}
+    </Alert>
+  );
+}
+
 export default function LoginPage(){
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -33,6 +41,7 @@ export default function LoginPage(){
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessages, setErrorMessages] = useState(null);
     const { updateUser } = useContext(CacheContext);
 
     const handleSubmit = (e) => {
@@ -44,13 +53,12 @@ export default function LoginPage(){
           password: hashedPassword,
           longExpiry: false,
       }).then((res) => {
-          if (res.error) {
-              console.log(res.error);
-              return;
-          }
           const updates = {loggedIn: true, username: email, ...res};
           updateUser(updates);
           navigate(redirectUrl);
+      }).catch((error) => {
+          console.log(error);
+          setErrorMessages(error.message);
       });
     };
   
@@ -58,6 +66,7 @@ export default function LoginPage(){
       <div>
       <h1>Login</h1>
       {MessageFromParams(searchParams)}
+      {errorMessages ? ErrorMessage(errorMessages) : null}
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label for="email">Email</Label>
