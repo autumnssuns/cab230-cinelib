@@ -22,6 +22,7 @@ app.use('/', swaggerRoutes);
 // Set up knex
 const options = require('./knexfile.js');
 const knex = require('knex')(options);
+const cors = require('cors');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,6 +33,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Added cors 
+app.use(cors());
 
 // Add knex to the request
 app.use((req, res, next) => {
