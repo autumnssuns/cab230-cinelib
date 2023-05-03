@@ -1,3 +1,21 @@
+/** 
+ * @swagger
+ * tags:
+ *  name: Movies
+ *  description: Movie information API
+ * /movies/search:
+ *  get:
+ *      tags: [Movies]
+ *      description: Returns a list of movie data. The list is arranged by imdbId, in ascending order.
+ *    parameters:
+ *     - in: query
+ *      name: title
+ *     - in: query
+ *     name: year
+ *    - in: query
+ *    name: page
+ */
+
 var express = require('express');
 var router = express.Router();
 
