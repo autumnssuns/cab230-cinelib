@@ -4,20 +4,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var moviesRouter = require('./routes/movies');
 
 var app = express();
 
-// Added swagger
-const swaggerUi = require('swagger-ui-express');
-const swaggerJSDoc = require('swagger-jsdoc');
-
-const swaggerRoutes = require('./swagger');
-
-// Set up swagger documentation
-app.use('/', swaggerRoutes);
+// Added swagger documentation
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 // Set up knex
 const options = require('./knexfile.js');
@@ -43,9 +37,13 @@ app.use((req, res, next) => {
   next()
 });
 
-app.use('/', indexRouter);
+// Setup routes
 app.use('/user', usersRouter);
 app.use('/movies', moviesRouter);
+// Set up swagger route
+app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument, {
+  swaggerOptions: { defaultModelsExpandDepth: -1 }, // Hide the Schemas
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
