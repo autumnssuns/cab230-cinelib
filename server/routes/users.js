@@ -45,13 +45,28 @@ async function loginUser(knex, email, password, longExpiry = false) {
   const [bearerToken, bearerIat, bearerExp] = createBearerToken(email, longExpiry);
   const [refreshToken, refreshIat, refreshExp] = createRefreshToken(email, longExpiry);
 
-  // Store the expiries in the database, in the bearer_iat, bearer_exp, refresh_iat and refresh_exp columns
-  await knex('sessions')
+  // Find the user's session in the database
+  const session = await knex('sessions')
     .where('email', email)
-    .update({
-      bearer_exp: bearerExp,
-      refresh_exp: refreshExp
-    });
+    .first();
+  
+  // If the session exists, update the tokens
+  if (session) {
+    await knex('sessions')
+      .where('email', email)
+      .update({
+        bearer_exp: bearerExp,
+        refresh_exp: refreshExp
+      });
+  } else {
+    // If the session does not exist, create it
+    await knex('sessions')
+      .insert({
+        email: email,
+        bearer_exp: bearerExp,
+        refresh_exp: refreshExp
+      });
+  }
 
   // Return the tokens
   return {

@@ -4,6 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// Added dotenv for environment variables
+const dotenv = require('dotenv');
+dotenv.config();
+
 var usersRouter = require('./routes/users');
 var moviesRouter = require('./routes/movies');
 
