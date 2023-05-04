@@ -316,35 +316,431 @@
       }
     },
 
-    "/user": {
+    "/user/register": {
       "post": {
-        "tags": ["user"],
-        "summary": "Create user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
+        "tags": ["Authentication"],
+        "description": "Creates a new user account. A request body containing the user to be registered must be sent.",
+        "operationId": "userRegister",
         "requestBody": {
-          "description": "Created user object",
+          "required": true,
+          "description": "An object containing the email and password of the user to be registered.",
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/User" }
-            },
-            "application/xml": {
-              "schema": { "$ref": "#/components/schemas/User" }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": { "$ref": "#/components/schemas/User" }
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "mike@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password"
+                  }
+                }
+              }
             }
           }
         },
         "responses": {
-          "default": {
-            "description": "successful operation",
+          "201": {
+            "description": "User successfully created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/User" }
-              },
-              "application/xml": {
-                "schema": { "$ref": "#/components/schemas/User" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User created"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Request body incomplete, both email and password are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User already exists"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "Too many requests, please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/user/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Log in to an existing user account. A request body containing the user credentials must be sent. The longExpiry bool is a setting for development use only that makes both tokens expire after a year.",
+        "operationId": "userLogin",
+        "requestBody": {
+          "required": true,
+          "description": "The credentials of the user to log in.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "mike@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password"
+                  },
+                  "longExpiry": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bearerToken": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "ajsonwebtoken"
+                        },
+                        "token_type": {
+                          "type": "string",
+                          "example": "Bearer"
+                        },
+                        "expires_in": {
+                          "type": "integer",
+                          "example": 600
+                        }
+                      }
+                    },
+                    "refreshToken": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "ajsonwebtoken"
+                        },
+                        "token_type": {
+                          "type": "string",
+                          "example": "Refresh"
+                        },
+                        "expires_in": {
+                          "type": "integer",
+                          "example": 86400
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid log in request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Request body incomplete, both email and password are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Log in failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Incorrect email or password"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "Too many requests, please try again later."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/user/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Obtain a new bearer token by using a refresh token",
+        "operationId": "userRefresh",
+        "requestBody": {
+          "required": true,
+          "description": "The refresh token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "ajsonwebtoken"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token successfully refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bearerToken": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "ajsonwebtoken"
+                        },
+                        "token_type": {
+                          "type": "string",
+                          "example": "Bearer"
+                        },
+                        "expires_in": {
+                          "type": "integer",
+                          "example": 600
+                        }
+                      }
+                    },
+                    "refreshToken": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "ajsonwebtoken"
+                        },
+                        "token_type": {
+                          "type": "string",
+                          "example": "Refresh"
+                        },
+                        "expires_in": {
+                          "type": "integer",
+                          "example": 86400
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid refresh request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Request body incomplete, refresh token required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Click on 'Schema' below to see the possible error responses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenExpired"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "Too many requests, please try again later."
+                }
+              }
+            }
+          }
+        }
+      }      
+    },
+
+    "/user/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Log the user out, invalidating the refresh token",
+        "operationId": "userLogout",
+        "requestBody": {
+          "required": true,
+          "description": "The refresh token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "ajsonwebtoken"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token successfully invalidated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Token successfully invalidated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid refresh request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Request body incomplete, refresh token required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Click on 'Schema' below to see the possible error responses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenExpired"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "Too many requests, please try again later."
+                }
               }
             }
           }
@@ -529,182 +925,15 @@
           "error": { "type": "boolean", "example": true },
           "message": { "type": "string", "example": "Invalid JWT token" }
         }
-      },
-      "Person": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string", "example": "Patrick Stewart" },
-          "birthYear": { "type": "integer", "example": 1940 },
-          "deathYear": { "type": "integer", "example": null },
-          "roles": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "movieName": { "type": "string", "example": "Star Trek: First Contact" },
-                "movieId": { "type": "string", "example": "tt0117731" },
-                "category": { "type": "string", "example": "actor" },
-                "characters": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "example": "Picard"
-                  }
-                },
-                "imdbRating": { "type": "number", "example": 7.6 }
-              }
-            }
-          }
-        }
-      },
-      "Order": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64", "example": 10 },
-          "petId": { "type": "integer", "format": "int64", "example": 198772 },
-          "quantity": { "type": "integer", "format": "int32", "example": 7 },
-          "shipDate": { "type": "string", "format": "date-time" },
-          "status": {
-            "type": "string",
-            "description": "Order Status",
-            "example": "approved",
-            "enum": ["placed", "approved", "delivered"]
-          },
-          "complete": { "type": "boolean" }
-        },
-        "xml": { "name": "order" }
-      },
-      "Customer": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64", "example": 100000 },
-          "username": { "type": "string", "example": "fehguy" },
-          "address": {
-            "type": "array",
-            "xml": { "name": "addresses", "wrapped": true },
-            "items": { "$ref": "#/components/schemas/Address" }
-          }
-        },
-        "xml": { "name": "customer" }
-      },
-      "Address": {
-        "type": "object",
-        "properties": {
-          "street": { "type": "string", "example": "437 Lytton" },
-          "city": { "type": "string", "example": "Palo Alto" },
-          "state": { "type": "string", "example": "CA" },
-          "zip": { "type": "string", "example": "94301" }
-        },
-        "xml": { "name": "address" }
-      },
-      "Category": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64", "example": 1 },
-          "name": { "type": "string", "example": "Dogs" }
-        },
-        "xml": { "name": "category" }
-      },
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64", "example": 10 },
-          "username": { "type": "string", "example": "theUser" },
-          "firstName": { "type": "string", "example": "John" },
-          "lastName": { "type": "string", "example": "James" },
-          "email": { "type": "string", "example": "john@email.com" },
-          "password": { "type": "string", "example": "12345" },
-          "phone": { "type": "string", "example": "12345" },
-          "userStatus": {
-            "type": "integer",
-            "description": "User Status",
-            "format": "int32",
-            "example": 1
-          }
-        },
-        "xml": { "name": "user" }
-      },
-      "Tag": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" }
-        },
-        "xml": { "name": "tag" }
-      },
-      "Pet": {
-        "required": ["name", "photoUrls"],
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64", "example": 10 },
-          "name": { "type": "string", "example": "doggie" },
-          "category": { "$ref": "#/components/schemas/Category" },
-          "photoUrls": {
-            "type": "array",
-            "xml": { "wrapped": true },
-            "items": { "type": "string", "xml": { "name": "photoUrl" } }
-          },
-          "tags": {
-            "type": "array",
-            "xml": { "wrapped": true },
-            "items": { "$ref": "#/components/schemas/Tag" }
-          },
-          "status": {
-            "type": "string",
-            "description": "pet status in the store",
-            "enum": ["available", "pending", "sold"]
-          }
-        },
-        "xml": { "name": "pet" }
-      },
-      "ApiResponse": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "integer", "format": "int32" },
-          "type": { "type": "string" },
-          "message": { "type": "string" }
-        },
-        "xml": { "name": "##default" }
-      }
-    },
-    "requestBodies": {
-      "Pet": {
-        "description": "Pet object that needs to be added to the store",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/Pet" }
-          },
-          "application/xml": {
-            "schema": { "$ref": "#/components/schemas/Pet" }
-          }
-        }
-      },
-      "UserArray": {
-        "description": "List of user object",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "array",
-              "items": { "$ref": "#/components/schemas/User" }
-            }
-          }
-        }
       }
     },
     "securitySchemes": {
-      "petstore_auth": {
-        "type": "oauth2",
-        "flows": {
-          "implicit": {
-            "authorizationUrl": "https://petstore3.swagger.io/oauth/authorize",
-            "scopes": {
-              "write:pets": "modify pets in your account",
-              "read:pets": "read your pets"
-            }
-          }
-        }
-      },
-      "api_key": { "type": "apiKey", "name": "api_key", "in": "header" }
+      "bearerAuth": {
+        "description": "Enter JWT Bearer token ***only***",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
     }
   }
 }

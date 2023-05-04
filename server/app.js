@@ -41,7 +41,9 @@ app.use((req, res, next) => {
 app.use('/user', usersRouter);
 app.use('/movies', moviesRouter);
 // Set up swagger route
-app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument, {
+  swaggerOptions: { defaultModelsExpandDepth: -1 }, // Hide the Schemas
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
