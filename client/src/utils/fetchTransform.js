@@ -90,7 +90,7 @@ async function getDataFromIndexedDB(endpoint){
     switch (base){
         case '/movies/data':
             return await IndexedDB.Movies.read(id);
-        case '/people/':
+        case '/people':
             return await IndexedDB.People.read(id);
         default:
             return null;
@@ -109,11 +109,11 @@ async function addDataToIndexedDB(endpoint, data){
     const parts = endpoint.split('/');
     const id = parts[parts.length - 1];
     const base = parts.slice(0, parts.length - 1).join('/');
-    
+    console.log(base);
     switch (base){
         case '/movies/data':
             return await IndexedDB.Movies.create(id, data);
-        case '/people/':
+        case '/people':
             return await IndexedDB.People.create(id, data);
         default:
             return null;

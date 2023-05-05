@@ -8,7 +8,7 @@ export const IndexedDB = (() => {
     }
 
     // Open the database
-    const dbPromise = idb.openDB('test-db', 1, { 
+    const dbPromise = idb.openDB('movies-db', 1, { 
         upgrade(upgradeDb) {
             // Create a store of movies data, indexed by imdbID
             if (!upgradeDb.objectStoreNames.contains('movies')) {
