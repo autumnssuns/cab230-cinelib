@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import "./NavBar.css"
+import { IndexedDB } from "../../utils/indexed";
 import {
   Collapse,
   Navbar,
@@ -17,11 +17,9 @@ import {
   NavbarText,
 } from 'reactstrap';
 import { CacheContext } from '../../contexts/CacheContext';
+import "./NavBar.css"
 
-function LoginSection(){
-    const location = useLocation();
-    const currentUrl = location.pathname;
-
+function LoginSection(currentUrl){
     return (
         <Nav navbar>
             <NavItem>
@@ -47,14 +45,14 @@ function LoginSection(){
     )
 }
 
-function LogoutSection(username, onLogout){
+function LogoutSection(username, onLogout, to){
     return (
         <Nav navbar>
               <NavbarText style={{margin: "auto"}}>
                   Logged in as <b>{username}</b>
               </NavbarText>
             <NavItem>
-              <NavLink tag={Link} onClick={onLogout}>
+              <NavLink tag={Link} onClick={onLogout} to={to}>
                 <Button
                     color="primary"
                     outline
@@ -71,9 +69,15 @@ export default function NavBar(){
     const { user, updateUser } = useContext(CacheContext);
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
-
+    const location = useLocation();
+    const currentUrl = location.pathname;
+    
+    const logoutTarget = currentUrl.includes("/people/") ? "/" : currentUrl;
     const onLogout = () => {
       updateUser({loggedIn: false})
+      if (IndexedDB.IsSupported) {
+        IndexedDB.People.clear();
+      }
     }
 
     return (
@@ -95,7 +99,7 @@ export default function NavBar(){
               </NavItem>
             </Nav>
             {
-                user.loggedIn ? LogoutSection(user.username, onLogout) : LoginSection()
+                user.loggedIn ? LogoutSection(user.username, onLogout, logoutTarget) : LoginSection(currentUrl)
             }
           </Collapse>
         </Navbar>
