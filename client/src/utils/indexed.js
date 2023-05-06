@@ -128,6 +128,18 @@ export const IndexedDB = (() => {
                 }
                 );
             },
+            /**
+             * Clear the people store
+             */
+            clear: function () {
+                return dbPromise.then(function (db) {
+                    const tx = db.transaction('people', 'readwrite');
+                    const store = tx.objectStore('people');
+                    store.clear();
+                    return tx.complete;
+                }
+                );
+            }
         },
         IsSupported: true
     };
