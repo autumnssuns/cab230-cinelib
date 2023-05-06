@@ -20,14 +20,13 @@ export async function getEndpoint(
 
     // Fetch the data from the endpoint and return the transformed data.
     try {
-        // Wait before fetching
-        await new Promise((resolve) => setTimeout(resolve, waitBeforeFetch));
-
         // Get the data from the indexedDB if it exists.
         const indexedData = await getDataFromIndexedDB(endpoint);
         if (indexedData){
             return indexedData;
         }
+        // Wait before fetching
+            await new Promise((resolve) => setTimeout(resolve, waitBeforeFetch));
         // Otherwise, fetch the data from the API and save it to the indexedDB.
         const response = await fetch(`${BASE_API_URL}${endpoint}`, {
             method: 'GET',
