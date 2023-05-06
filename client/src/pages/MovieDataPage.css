@@ -1,4 +1,51 @@
 .principals-container {
-    width: 50%;
+    width: 70%;
     height: 50vh;
+    @media screen and (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+
+.movie-data-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+
+.movie-data-container {
+    display: flex;
+    flex-direction: row;
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+    }
+    gap: 2rem;
+    height: 100%;
+    flex-wrap: wrap;
+}
+
+.movie-data-container > img {
+    object-fit: contain;
+}
+
+.details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    flex: 0.7;
+}
+
+.rating-container {
+    width: 10em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rating-source {
+    text-align: center;
+    font-weight: 700;
 }
