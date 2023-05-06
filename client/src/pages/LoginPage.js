@@ -16,7 +16,7 @@ export function MessageFromParams(searchParams){
   // If the RedirectUrl contains /people/data, show a message
   // that the user needs to login to view the data
   const redirectUrl = searchParams.get('redirectUrl') || '/';
-  if (redirectUrl.includes('/people/data')) {
+  if (redirectUrl.includes('/people/')) {
     return (
       <Alert color="info">
         This page is only available to members. Please login or <Link to={`/register?redirectUrl=${redirectUrl}`}>register</Link> to view the data.

@@ -111,15 +111,7 @@ export default function PersonDataPage(){
         getEndpoint(`/people/${id}`,
             user.bearerToken.token
         ).then((res) => {
-            if (res.error) {
-                console.log(res.error);
-                if (res.message == "Authorization header ('Bearer token') not found") {
-                    // If the user is not logged in, redirect them to the login page
-                    navigate("/login?redirectUrl=/people/" + id);
-                }
-                setError(true);
-                return;
-            }
+
             setPerson(res);
             setRoles(res.roles);
             updateOptions({
@@ -129,7 +121,24 @@ export default function PersonDataPage(){
                 },
             });
             setLoading(false);
-        });
+        }).catch((err) => {
+            console.log(err);
+            if (err.error) {
+                if (err.message == "Authorization header ('Bearer token') not found") {
+                    // If the user is not logged in, redirect them to the login page
+                    navigate("/login?redirectUrl=/people/" + id);
+                }
+                if (err.message == "JWT token has expired.") {
+                    // If the user's token has expired, redirect them to the login page
+                    navigate("/login?redirectUrl=/people/" + id);
+                }
+                setError(true);
+                return;
+            }
+            setError(true);
+            setLoading(false);
+        }
+        );
     }, [id, user.bearerToken.token]);
 
     if (loading) {

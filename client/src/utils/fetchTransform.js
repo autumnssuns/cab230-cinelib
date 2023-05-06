@@ -38,7 +38,7 @@ export async function getEndpoint(
         });
         const data = await response.json();
         if (data.error){
-            throw new Error(data.message);
+            throw data;
         }
         // Save the data to the indexedDB.
         await addDataToIndexedDB(endpoint, data);
@@ -73,7 +73,7 @@ export async function postEndpoint(endpoint, body){
         });
         const data = await response.json();
         if (data.error){
-            throw new Error(data.message);
+            throw data;
         }
         return data;
     }

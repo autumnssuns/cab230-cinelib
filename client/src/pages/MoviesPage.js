@@ -117,10 +117,6 @@ export default function MoviesPage(){
         const searchParamsStr = `?${searchParams.toString()}`;
         // Remove page from initial search to get the total number of movies
         getEndpoint("/movies/search" + searchParamsStr.replace(/&page=(\d+)&?/, "")).then((res) => {
-            if (res.error) {
-                console.log(res.error);
-                return;
-            }
             return res;
         }).then((data) => {
             if (!data) return;
@@ -134,23 +130,21 @@ export default function MoviesPage(){
                     const pageNumber = Math.floor(params.startRow / pagination.perPage) + 1;
                     // Fetch the movies
                     getEndpoint(`/movies/search${searchParamsStr.replace(/(page=)(.*)/gm, `$1${pageNumber}`)}`).then((res) => {
-                        if (res.error) {
-                            console.log(res.error);
-                            return;
-                        }
                         return res;
                     }).then((data) => {
                         if (!data) return;
                         movies = data.data;
                         params.successCallback(movies, pagination.total);
-                    }).then(() => {
-                        // gridRef.current.columnApi.autoSizeColumn("title");
+                    }).catch((err) => {
+                        console.log(err);
                     });
                 }
             }
             gridRef.current.api.setDatasource(dataSource);
             // 
-        })
+        }).catch((err) => {
+            console.log(err);
+        });
     }, [searchParams]);
 
     return (

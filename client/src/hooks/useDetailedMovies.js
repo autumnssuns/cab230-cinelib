@@ -61,20 +61,21 @@ export function useDetailedMovies({ title, year, page }) {
     
     async function fetchMovies() {
   
-      const moviesSearch = await getEndpoint(
-        "/movies/search",
-        user.bearerToken.token,
-        signal
-      );
-  
-      if (moviesSearch.error) {
+      try {
+        const moviesSearch = await getEndpoint(
+          "/movies/search",
+          user.bearerToken.token,
+          signal
+        );
+    
+        setMovies(moviesSearch.data);
+        await loadDetails(moviesSearch.data, signal);
+    
+        console.log("Movies search:", moviesSearch);
+      } catch (error) {
+        console.log(error);
         setIsError(true);
-        return;
       }
-      setMovies(moviesSearch.data);
-      await loadDetails(moviesSearch.data, signal);
-  
-      console.log("Movies search:", moviesSearch);
     };
     fetchMovies();
 
