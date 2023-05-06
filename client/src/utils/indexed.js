@@ -4,7 +4,9 @@ export const IndexedDB = (() => {
     // Check for support
     if (!('indexedDB' in window)) {
         console.log('This browser doesn\'t support IndexedDB');
-        return;
+        return {
+            IsSupported: false
+        };
     }
 
     // Open the database
@@ -127,5 +129,6 @@ export const IndexedDB = (() => {
                 );
             },
         },
+        IsSupported: true
     };
 })()

@@ -1,27 +1,32 @@
-import { movies } from '../mocks/movie.search.js';
 import { IndexedDB } from './indexed.js';
 
 /**
  * Get data from the given endpoint, relative to the BASE_API_URL defined in the
  * app.config.json file, and transforms it into a JSON object.
  * @param {string} endpoint The endpoint to fetch data from, e.g. '/movies/search'.
- * @param {function} transformer A function that transforms the json data into a JavaScript object.
+ * @param {string} token The JWT token to use for authentication.
+ * @param {AbortSignal} signal The AbortSignal to use for cancelling the request. Defaults to null.
+ * @param {number} waitBeforeFetch The number of milliseconds to wait before fetching the data from the API. Defaults to 0.
+ * @returns {*} The response from the server.
  */
 export async function getEndpoint(
     endpoint, 
     token, 
-    transformer = (data) => data,
-    signal = null // AbortSignal for cancelling the request.
+    signal = null,
+    waitBeforeFetch = 0
     ) {
     // Extract the base API URL from the app config file.
     const { BASE_API_URL } = await import('../app.config.json');
 
     // Fetch the data from the endpoint and return the transformed data.
     try {
+        // Wait before fetching
+        await new Promise((resolve) => setTimeout(resolve, waitBeforeFetch));
+
         // Get the data from the indexedDB if it exists.
         const indexedData = await getDataFromIndexedDB(endpoint);
         if (indexedData){
-            return transformer(indexedData);
+            return indexedData;
         }
         // Otherwise, fetch the data from the API and save it to the indexedDB.
         const response = await fetch(`${BASE_API_URL}${endpoint}`, {
@@ -38,7 +43,7 @@ export async function getEndpoint(
         }
         // Save the data to the indexedDB.
         await addDataToIndexedDB(endpoint, data);
-        return transformer(data);
+        return data;
     }
     catch (error) {
         console.log(error)
@@ -47,15 +52,20 @@ export async function getEndpoint(
     }
 }
 
+/**
+ * Post data to the given endpoint, relative to the BASE_API_URL defined in the
+ * app.config.json file, and transforms it into a JSON object.
+ * @param {string} endpoint The endpoint to fetch data from, e.g. '/movies/search'.
+ * @param {*} body The body of the request.
+ * @returns {*} The response from the server.
+ */
 export async function postEndpoint(endpoint, body){
     // Extract the base API URL from the app config file.
     const { BASE_API_URL } = await import('../app.config.json');
 
     // Fetch the data from the endpoint and return the transformed data.
     try {
-        // If the BASE_API_URL is 'local', then use the mock data.
-        let response;
-        response = await fetch(`${BASE_API_URL}${endpoint}`, {
+        const response = await fetch(`${BASE_API_URL}${endpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -81,6 +91,11 @@ export async function postEndpoint(endpoint, body){
  * @returns {Promise} A promise that resolves when the data has been retrieved from the indexedDB.
  */
 async function getDataFromIndexedDB(endpoint){
+    // Check if the indexedDB is supported.
+    if (!IndexedDB.IsSupported){
+        return null;
+    }
+
     // Get the parts of the endpoint - id and base.
     // e.g. '/movies/data/tt1234567' => id = 'tt1234567', base = '/movies/data'
     const parts = endpoint.split('/');
@@ -104,6 +119,11 @@ async function getDataFromIndexedDB(endpoint){
  * @returns {Promise} A promise that resolves when the data has been added to the indexedDB.
  */
 async function addDataToIndexedDB(endpoint, data){
+    // Check if the indexedDB is supported.
+    if (!IndexedDB.IsSupported){
+        return null;
+    }
+
     // Get the parts of the endpoint - id and base.
     // e.g. '/movies/data/tt1234567' => id = 'tt1234567', base = '/movies/data'
     const parts = endpoint.split('/');
