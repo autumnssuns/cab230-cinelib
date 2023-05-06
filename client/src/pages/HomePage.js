@@ -5,6 +5,7 @@ import MovieGrid from '../components/MovieGrid/MovieGrid';
 import MoviesBanner from '../components/MoviesBanner/MoviesBanner';
 import { MovieDetailsLoader } from '../utils/movieDetailsLoader';
 import { CacheContext } from '../contexts/CacheContext';
+import "./HomePage.css";
 
 const START_YEAR = 2023;
 const END_YEAR = 2020;
@@ -85,8 +86,10 @@ export default function HomePage(){
 
     return (
         <>
-            <MoviesBanner movies={movies} details={details}/>
-            
+          <div class="banner">
+            <h2>Your ultimate movie guide - find all the information about your favorite movies in one place.</h2>
+            <MoviesBanner movies={movies} details={details} style={{width: "80%"}}/>
+          </div>
             {/* <MovieGrid movies={movies} details={details}/> */}
             {moviesGrids}
         </>
