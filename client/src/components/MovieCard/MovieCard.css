@@ -5,7 +5,8 @@
     height: var(--height);
     overflow: hidden;
     border-radius: 5px;
-    box-shadow: 0 0 10px 0 var(--color-primary);
+    /* box-shadow: 0 0 10px 0 var(--color-primary); */
+    border: 2px solid var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: space-around;
