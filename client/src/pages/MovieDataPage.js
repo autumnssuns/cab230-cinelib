@@ -105,19 +105,6 @@ export default function MovieDataPage() {
 
   const columns = [
     {
-      headerName: "Role",
-      field: "category",
-      cellRenderer: (params) => {
-        // Make the first letter of the role uppercase
-        const role =
-          params.value.charAt(0).toUpperCase() + params.value.slice(1);
-        return role;
-      },
-      sortable: true,
-      filter: true,
-      minWidth: 175,
-    },
-    {
       headerName: "Name",
       field: "name",
       sortable: true,
@@ -138,6 +125,19 @@ export default function MovieDataPage() {
       sortable: true,
       filter: true,
       minWidth: 225,
+    },    
+    {
+      headerName: "Role",
+      field: "category",
+      cellRenderer: (params) => {
+        // Make the first letter of the role uppercase
+        const role =
+          params.value.charAt(0).toUpperCase() + params.value.slice(1);
+        return role;
+      },
+      sortable: true,
+      filter: true,
+      minWidth: 175,
     },
   ];
 
