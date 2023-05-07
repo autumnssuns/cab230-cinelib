@@ -4,7 +4,8 @@
     margin: 0 auto;
     cursor: pointer;
 }
-  
+
+
 .banner-cell {
     --tilt-cut: 20%;
     min-width: 200px;
@@ -26,10 +27,10 @@
         object-position: 50% 0%;
     }
     25% {
-        object-position: 100% 0%;
+        object-position: 0% 0%;
     }
     75% {
-        object-position: 0% 0%;
+        object-position: 100% 0%;
     }
     100% {
         object-position: 50% 0%;
