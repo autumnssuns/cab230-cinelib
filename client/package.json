@@ -13,6 +13,8 @@
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.2.3",
+    "country-list": "^2.3.0",
+    "country-state-picker": "^1.1.5",
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
     "idb": "^7.1.1",
@@ -25,6 +27,7 @@
     "react-scripts": "5.0.1",
     "react-strap": "^0.0.1",
     "react-styleguidist": "^13.1.1",
+    "react-world-flags": "^1.5.1",
     "reactstrap": "^9.1.9",
     "web-vitals": "^3.3.1"
   },

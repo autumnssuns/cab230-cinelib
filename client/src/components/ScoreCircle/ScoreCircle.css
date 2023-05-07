@@ -1,0 +1,69 @@
+/* CSS for
+export function ScoreCircle({score, max, unit, size: radius, label, color, style}){
+    return (
+        <div className="score-circle-container" style={style}>
+            <svg className="score-circle" viewBox={`0 0 ${radius*2} ${radius*2}`} width={radius*2} height={radius*2}>
+                <circle
+                    className="score-circle-background"
+                    cx={radius}
+                    cy={radius}
+                    r={radius}
+                    fill="none"
+                    stroke="#000000"
+                    strokeWidth={radius/10}
+                />
+                <circle
+                    className="score-circle-foreground"
+                    cx={radius}
+                    cy={radius}
+                    r={radius}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={radius/10}
+                    strokeDasharray={`${score/max*100} ${100-score/max*100}`}
+                    strokeDashoffset={25}
+                />
+                <text
+                    className="score-circle-label"
+                    x={radius}
+                    y={radius}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize={radius/2}
+                >
+                    {score}{unit}
+                </text>
+                <text
+                    className="score-circle-label"
+                    x={radius}
+                    y={radius*1.5}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize={radius/4}
+                >
+                    {label}
+                </text>
+            </svg>
+        </div>
+    )
+}
+ */
+
+/* Path: client\src\components\ScoreCircle\ScoreCircle.js */
+
+/* Path: client\src\components\ScoreCircle\ScoreCircle.css */
+
+.score-circle-background {
+    fill: none;
+    stroke: var(--color-background);
+}
+
+.score-circle-foreground {
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-linecap: round;
+}
+
+.score-circle-label {
+    fill: var(--color-text);
+}

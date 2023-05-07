@@ -12,6 +12,7 @@ import MovieDataPage from './pages/MovieDataPage';
 import MoviesPage from './pages/MoviesPage';
 import { postEndpoint } from './utils/fetchTransform';
 import PersonDataPage from './pages/PersonDataPage';
+import { ScoreCircle } from './components/ScoreCircle/ScoreCircle';
 
 function App() {
   console.log("App Rendered")
@@ -68,16 +69,14 @@ function App() {
     postEndpoint('/user/refresh', {
       refreshToken: localStorage.getItem('refreshToken'),
     }).then((res) => {
-      if (res.error) {
-        console.log(res.error);
-        return;
-      }
       // Decode the bearer token to get the username
       const decoded = jwt(res.bearerToken.token);
       const username = decoded.email;
       const updates = {loggedIn: true, username, ...res};
       console.log(updates)
       updateUser(updates);
+    }).catch((error) => {
+      console.log(error);
     });
   }
 
