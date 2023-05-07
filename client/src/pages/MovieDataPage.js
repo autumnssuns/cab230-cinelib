@@ -101,7 +101,6 @@ export default function MovieDataPage() {
   const defaultColsDef = {
     flex: 1,
     resizable: true,
-    width: "100px",
   };
 
   const columns = [
@@ -116,6 +115,7 @@ export default function MovieDataPage() {
       },
       sortable: true,
       filter: true,
+      minWidth: 175,
     },
     {
       headerName: "Name",
@@ -125,6 +125,7 @@ export default function MovieDataPage() {
       cellRenderer: (params) => {
         return <Link to={`/people/${params.data.id}`}>{params.value}</Link>;
       },
+      minWidth: 225,
     },
     {
       headerName: "Characters",
@@ -136,6 +137,7 @@ export default function MovieDataPage() {
       },
       sortable: true,
       filter: true,
+      minWidth: 225,
     },
   ];
 
