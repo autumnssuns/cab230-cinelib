@@ -92,7 +92,6 @@ export default function HomePage(){
             <div class="curtain left overlay-child"></div>
             <div class="curtain right overlay-child"></div>
           </div>
-            {/* <MovieGrid movies={movies} details={details}/> */}
             {moviesGrids}
         </>
     )
