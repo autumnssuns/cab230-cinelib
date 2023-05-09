@@ -4,12 +4,15 @@
     width: var(--width);
     height: var(--height);
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: 0.5rem;
     /* box-shadow: 0 0 10px 0 var(--color-primary); */
-    border: 2px solid var(--color-primary);
+    background: linear-gradient(var(--color-background), var(--color-background)) padding-box,
+        linear-gradient(45deg, transparent, var(--color-primary), transparent) border-box;
+    border: 2px solid transparent;
     display: flex;
     align-items: center;
     justify-content: space-around;
+    box-shadow: 0.2rem 0.2rem 0.2rem #000;
 }
 
 .movie-title {
@@ -27,6 +30,8 @@
 }
 
 .movie-card {
-    /* Hover effect */
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
