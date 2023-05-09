@@ -86,9 +86,11 @@ export default function HomePage(){
 
     return (
         <>
-          <div class="banner">
-            <h2>Your ultimate movie guide - find all the information about your favorite movies in one place.</h2>
-            <MoviesBanner movies={movies} details={details} style={{width: "80%"}}/>
+          <div class="banner curtain-frame">
+            <h2 class="welcome-message overlay-child">Your ultimate movie guide - find all the information about your favorite movies in one place.</h2>
+            <MoviesBanner className="overlay-child" movies={movies} details={details} style={{width: "80%"}}/>
+            <div class="curtain left overlay-child"></div>
+            <div class="curtain right overlay-child"></div>
           </div>
             {/* <MovieGrid movies={movies} details={details}/> */}
             {moviesGrids}

@@ -1,12 +1,15 @@
 .movie-grid-container {
-    display: flex;
+    /* display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: flex-start;
-    gap: 25px;
+    align-items: flex-start; */
+    gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    margin: 2rem;
 }
 
 .movie-grid-container:hover .movie-card:not(:hover) {
     filter: grayscale(85%) brightness(0.5);
-    opacity: 0.75;
+    /* opacity: 0.75; */
 }

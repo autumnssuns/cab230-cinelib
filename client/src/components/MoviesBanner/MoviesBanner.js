@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import './MoviesBanner.css'
 import { useNavigate } from 'react-router-dom'
 
-export default function MoviesBanner({movies, details, style}){
+export default function MoviesBanner({movies, details, style, className}){
     const navigate = useNavigate();
     // Filter for movies whose ID is in details
     movies = movies.filter(movie => details[movie.imdbID])
@@ -23,7 +23,7 @@ export default function MoviesBanner({movies, details, style}){
     }, [movies])
 
     return (
-        <div className="movies-banner-container" style={style}>
+        <div className={`movies-banner-container ${className}`} style={style}>
             {
                 movies.map((movie, index) => {
                     return <div className="banner-cell"
