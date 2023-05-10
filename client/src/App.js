@@ -84,7 +84,7 @@ function App() {
     <CacheContext.Provider value={{user, updateUser}}>
       <div className="App">
         <NavBar/>
-        <main>
+        <main className='background-dotted'>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/movies" element={<MoviesPage />} />

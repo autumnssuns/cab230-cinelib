@@ -39,7 +39,7 @@ export default function RegisterPage(){
     };
 
     return (
-        <div className='centering-page background-dotted'>
+        <div className='centering-page'>
             <div className='shadow-card'>
                 <div className='shadow-card-content'>
                     <h1>Register</h1>

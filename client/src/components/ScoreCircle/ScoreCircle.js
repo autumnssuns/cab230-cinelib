@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./ScoreCircle.css";
 
-export function ScoreCircle({ score, max, unit, radius, color, style }) {
+export function ScoreCircle({ score, max, unit, radius, color, style, animate = true }) {
   const strokeSize = radius / 5;
   const innerRadius = radius - strokeSize;
   const dashArray = Math.PI * innerRadius * 2;
@@ -11,6 +11,10 @@ export function ScoreCircle({ score, max, unit, radius, color, style }) {
   const [dashOffset, setDashOffset] = useState(dashArray);
 
   useEffect(() => {
+    if (!animate) {
+      setDashOffset(targetDashOffset);
+      return;
+    }
     const interval = setInterval(() => {
       setDashOffset((dashOffset) => {
         const step = (targetDashOffset - dashOffset) / 10;

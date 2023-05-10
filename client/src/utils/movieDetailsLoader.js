@@ -1,10 +1,9 @@
 const getEndpoint = require("../utils/fetchTransform").getEndpoint;
 
 export class MovieDetailsLoader {
-  constructor(setMovies, setMovieDetails, user) {
+  constructor(setMovies, setMovieDetails) {
     this.setMovies = setMovies;
     this.setMoviesDetails = setMovieDetails;
-    this.user = user;
   }
 
   /**
@@ -18,7 +17,7 @@ export class MovieDetailsLoader {
     console.log("Fetching:");
     return getEndpoint(
       `/movies/data/${movie.imdbID}`,
-      this.user.bearerToken.token,
+      null,
       abortSignal,
       waitBeforeFetch
     ).then((data) => {
@@ -34,27 +33,27 @@ export class MovieDetailsLoader {
   };
 
   /**
-   * Loads the details of the movies.
-   * @param {*} movies The movies to transform.
+   * Loads the details of the movies and updates the movies' data in-place.
+   * @param {*} movies The movies to transform, should contain a subset of the movies in a state.
    * @param {*} abortSignal The abort signal to cancel the fetch.
    */
-  loadDetails = async (movies, setMovies, abortSignal) => {
+  loadDetails = async (movies, setMovies, abortSignal, initialBatchSize = 10) => {
     // Show all movies' names before loading the details.
     console.log("Loading details for:", movies);
-
-    const INITIAL_FETCH_LIMIT = 10;
+    
     const DELAY_BEFORE_EACH_FETCH = 1800;
 
     for (let i = 0; i < movies.length; i++) {
       console.log("Loading details for:", movies[i].Title);
-      let delay = i < INITIAL_FETCH_LIMIT ? 0 : DELAY_BEFORE_EACH_FETCH;
+      let delay = i < initialBatchSize ? 0 : DELAY_BEFORE_EACH_FETCH;
       // To avoid overloading, have a long delay after the first 10 fetches.
-      if (i == INITIAL_FETCH_LIMIT) {
-        delay = INITIAL_FETCH_LIMIT * DELAY_BEFORE_EACH_FETCH;
+      if (i == initialBatchSize) {
+        delay = (initialBatchSize + 1) * DELAY_BEFORE_EACH_FETCH;
       }
+      console.log("Delay", delay);
       try {
         await this.fetchAndUpdate(movies[i], abortSignal, delay);
-        setMovies((movies) => [...movies]);        
+        setMovies(prevMovies => [...prevMovies]);     
       } catch (error) {
         console.log(error);
       }
