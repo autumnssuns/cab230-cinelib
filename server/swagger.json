@@ -219,7 +219,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Person"
+                  "type": "object",
+                  "properties": {
+                    "name": {"type": "string", "example": "Patrick Stewart"},
+                    "birthYear": {"type": "integer", "example": 1940},
+                    "deathYear": {"type": "integer", "example": null},
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                            "movieName": {"type": "string", "example": "Star Trek: First Contact"},
+                            "movieId": {"type": "string", "example": "tt0117731"},
+                            "category": {"type": "string", "example": "actor"},
+                            "characters": {"type": "array", "items": {"type": "string", "example": "Picard"}},
+                            "imdbRating": {"type": "number", "example": 7.6}
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
