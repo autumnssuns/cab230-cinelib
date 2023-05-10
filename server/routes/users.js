@@ -1,6 +1,15 @@
 var express = require('express');
 var jwt = require('jsonwebtoken');
 var router = express.Router();
+var bcrypt = require('bcrypt');
+
+/**
+ * Hashes a password using bcrypt
+ * @param {*} password 
+ */
+function hashPassword(password) {
+
+}
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -8,6 +17,8 @@ router.get('/', function(req, res, next) {
 });
 
 async function registerUser(knex, email, password) {
+  // TODO: Hash password
+
   if (!email || !password) {
     throw new Error("Request body incomplete, both email and password are required");
   }
@@ -30,6 +41,8 @@ async function registerUser(knex, email, password) {
 }
 
 async function loginUser(knex, email, password, longExpiry = false) {
+  // TODO: Hash password
+
   if (!email || !password) {
     throw new Error("Request body incomplete, both email and password are required");
   }
