@@ -151,6 +151,7 @@ export default function MoviesPage(){
         <div className="movies-page">
             <div className="movies-page-header">
                 <h1>Movies</h1>
+                <em>Mirror mirror on the wall, find me the best of them all...</em>
                 <div className="movies-page-header-filters">
                     <div className="movies-page-header-filter">
                         <label>Title</label>
