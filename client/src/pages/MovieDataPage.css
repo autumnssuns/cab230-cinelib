@@ -120,6 +120,7 @@
 }
 
 .vertical-separator {
+    width: 1px;
     min-width: 1px;
     background: linear-gradient(
         transparent,
