@@ -14,7 +14,6 @@ export class MovieDetailsLoader {
    * @returns
    */
   fetchAndUpdate = async (movie, abortSignal, waitBeforeFetch) => {
-    console.log("Fetching:");
     return getEndpoint(
       `/movies/data/${movie.imdbID}`,
       null,
@@ -23,7 +22,6 @@ export class MovieDetailsLoader {
     ).then((data) => {
       movie.data = data;
       this.setMoviesDetails((details) => {
-        console.log("Details:", details);
         return {
           ...details,
           [movie.imdbID]: movie.data,
@@ -39,18 +37,15 @@ export class MovieDetailsLoader {
    */
   loadDetails = async (movies, setMovies, abortSignal, initialBatchSize = 10) => {
     // Show all movies' names before loading the details.
-    console.log("Loading details for:", movies);
     
     const DELAY_BEFORE_EACH_FETCH = 1800;
 
     for (let i = 0; i < movies.length; i++) {
-      console.log("Loading details for:", movies[i].Title);
       let delay = i < initialBatchSize ? 0 : DELAY_BEFORE_EACH_FETCH;
       // To avoid overloading, have a long delay after the first 10 fetches.
       if (i == initialBatchSize) {
         delay = (initialBatchSize + 1) * DELAY_BEFORE_EACH_FETCH;
       }
-      console.log("Delay", delay);
       try {
         await this.fetchAndUpdate(movies[i], abortSignal, delay);
         setMovies(prevMovies => [...prevMovies]);     

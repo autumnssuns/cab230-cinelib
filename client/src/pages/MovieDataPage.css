@@ -91,18 +91,6 @@
     font-weight: 500;
 }
 
-.rating-container {
-    width: 8em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.rating-source {
-    text-align: center;
-    font-weight: 700;
-}
-
 .genres-container {
     display: flex;
     gap: 0.5rem;

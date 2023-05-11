@@ -47,7 +47,6 @@ export default function HomePage(){
             setIsLoading(false);
             
             await detailsLoader.loadDetails(movies, setMovies, signal);
-            console.log("Movies search:", movies);
           }
           catch (error) {
             setIsError(true);
@@ -61,7 +60,6 @@ export default function HomePage(){
     
         return () => {
           abortController.abort();
-          console.log("Aborted");
         };
     }, []);
 
@@ -86,11 +84,11 @@ export default function HomePage(){
 
     return (
         <>
-          <div class="banner curtain-frame">
-            <h2 class="welcome-message overlay-child">Your ultimate movie guide - find all the information about your favorite movies in one place.</h2>
+          <div className="banner curtain-frame">
+            <h2 className="welcome-message overlay-child">Your ultimate movie guide - find all the information about your favorite movies in one place.</h2>
             <MoviesBanner className="overlay-child" movies={movies} details={details} style={{width: "80%"}}/>
-            <div class="curtain left overlay-child"></div>
-            <div class="curtain right overlay-child"></div>
+            <div className="curtain left overlay-child"></div>
+            <div className="curtain right overlay-child"></div>
           </div>
             {moviesGrids}
         </>

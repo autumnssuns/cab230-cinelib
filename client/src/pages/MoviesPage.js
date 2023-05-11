@@ -12,6 +12,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./MoviesPage.css";
 import "./Common.css";
+import { Ratings } from "../components/Ratings/Ratings";
 
 const MIN_YEAR = 1990;
 const MAX_YEAR = new Date().getFullYear();
@@ -63,9 +64,11 @@ function Table({ searchParams }) {
       field: "classification",
       cellRenderer: (params) => {
         if (!params.data) return;
-        return (<span className="gradient-rounded-border classification-badge">
-          {params.data.classification}
-        </span>);
+        return (
+          <span className="gradient-rounded-border classification-badge">
+            {params.data.classification}
+          </span>
+        );
       },
     },
   ];
@@ -138,6 +141,7 @@ function Details({ searchParams }) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const detailsLoader = new MovieDetailsLoader(setMovies, setDetails);
@@ -146,25 +150,20 @@ function Details({ searchParams }) {
     setMovies([]);
     setDetails({});
     setPage(1);
-
+    setHasMore(false);
+    setScrollTop(0);
+    setIsLoading(false);
+    
     const searchParamsStr = GetEndpointSearchParams(searchParams);
-
-    async function fetchMovies() {
-      try {
-        const response = await getEndpoint(
-          `/movies/search${searchParamsStr}&page=${page}`
-        );
-        const data = response.data;
-        setHasMore(response.pagination.nextPage !== null);
-        setMovies(data);
-
-        console.log("Movies search:", movies);
-      } catch (error) {
-        console.log(error);
+    setIsLoading(true);
+    getEndpoint(`/movies/search${searchParamsStr}&page=${page}`).then(
+      (data) => {
+        if (!data) return;
+        setMovies((movies) => [...movies, ...data.data]);
+        setHasMore(data.pagination.nextPage !== null);
+        setIsLoading(false);
       }
-    }
-
-    fetchMovies();
+    );
   }, [searchParams]);
 
   useEffect(() => {
@@ -178,7 +177,6 @@ function Details({ searchParams }) {
       signal,
       0
     );
-    console.log("Movies:", movies);
 
     return () => {
       abortController.abort();
@@ -205,12 +203,16 @@ function Details({ searchParams }) {
   }, [scrollTop, hasMore]);
 
   useEffect(() => {
+    if (!hasMore) return;
+    if (page === 1) return;
     const searchParamsStr = GetEndpointSearchParams(searchParams);
+    setIsLoading(true);
     getEndpoint(`/movies/search${searchParamsStr}&page=${page}`).then(
       (data) => {
         if (!data) return;
         setMovies((movies) => [...movies, ...data.data]);
         setHasMore(data.pagination.nextPage !== null);
+        setIsLoading(false);
       }
     );
   }, [page]);
@@ -219,9 +221,11 @@ function Details({ searchParams }) {
     <div id="movies-details-list" className="movies-page-results-container">
       {movies.map((movie) => {
         return (
-          <div class="movie-details-row" onClick={
-            () => navigate(`/movies/data/${movie.imdbID}`)
-          }>
+          <div
+            key={movie.imdbID}
+            className="movie-details-row"
+            onClick={() => navigate(`/movies/data/${movie.imdbID}`)}
+          >
             <MovieCard
               key={movie.id}
               movie={movie}
@@ -231,48 +235,49 @@ function Details({ searchParams }) {
             />
             <div className="movie-details">
               <div className="movie-header">
-              <h3 className="movie-details-title">{movie.title}</h3>
-              <Separator />
-              <h4 className="movie-details-year light-font">{movie.year}</h4>
-              <Separator />
-              <h4 className="movie-details-class gradient-rounded-border light-font">{movie.classification}</h4>
+                <h3 className="movie-details-title">{movie.title}</h3>
+                <Separator />
+                <h4 className="movie-details-year light-font">{movie.year}</h4>
+                <Separator />
+                <h4 className="movie-details-class gradient-rounded-border light-font">
+                  {movie.classification}
+                </h4>
               </div>
-              <div className="movie-ratings">
-                { movie.imdbRating !== null &&
-                  <Rating
-                    rating={{
-                      source: "Internet Movie Database",
-                      value: movie.imdbRating,
-                    }}
+              <div className="movie-info">
+                <div className="movie-ratings">
+                  <Ratings
+                    ratings={[
+                      {
+                        source: "Internet Movie Database",
+                        value: movie.imdbRating,
+                      },
+                      {
+                        source: "Rotten Tomatoes",
+                        value: movie.rottenTomatoesRating,
+                      },
+                      {
+                        source: "Metacritic",
+                        value: movie.metacriticRating,
+                      },
+                    ]}
                     radius={25}
                     animate={false}
                   />
-                }
-                { movie.rottenTomatoesRating !== null &&
-                  <Rating
-                    rating={{
-                      source: "Rotten Tomatoes",
-                      value: movie.rottenTomatoesRating,
-                    }}
-                    radius={25}
-                    animate={false}
-                  />
-                }
-                { movie.metacriticRating !== null && (
-                  <Rating
-                    rating={{
-                      source: "Metacritic",
-                      value: movie.metacriticRating,
-                    }}
-                    radius={25}
-                    animate={false}
-                  />
-                )}
+                </div>
+                <div className="movie-details-plot overlay">
+                  <p>{movie.data?.plot}</p>
+                </div>
+                <div/>
               </div>
             </div>
           </div>
         );
       })}
+      {isLoading && (
+        <span className="loading">
+          Loading more movies...
+        </span>
+      )}
     </div>
   );
 }

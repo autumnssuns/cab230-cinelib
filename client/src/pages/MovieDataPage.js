@@ -9,6 +9,7 @@ import Flag from "react-world-flags";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./MovieDataPage.css";
+import { Ratings } from "../components/Ratings/Ratings";
 
 function formatCurrency(number) {
   if (typeof(number) !== "number" || isNaN(number)) {
@@ -47,7 +48,6 @@ function Genres({genres}) {
 function Countries({countries}){
   const countryComponents = countries.map((countryName) => {
     const country = getCode(countryName.trim());
-    console.log(country);
     return (
       <div key={countryName} className="country">
         <Flag key={country} code={country} height="16" />
@@ -116,7 +116,6 @@ export default function MovieDataPage() {
       .then((data) => {
         setMovie(data);
         setIsLoading(false);
-        console.log(data);
       });
   }, [imdbID]);
 
@@ -152,20 +151,7 @@ export default function MovieDataPage() {
               <Countries countries={movie.country.split(",")}></Countries>
             </div>
             <div><strong>Box Office</strong>: {formatCurrency(movie.boxoffice)}</div>
-            <div className="ratings-container">
-              <div style={{
-                display: "flex",
-                flexWrap: "wrap"
-              }}>
-                {movie.ratings.filter((rating) => {
-                  return typeof(rating.value) === "number";
-                }).map((rating) => {
-                  return (
-                    <Rating rating={rating} key={rating.source}></Rating>
-                  );
-                })}
-              </div>
-            </div>
+            <Ratings ratings={movie.ratings}></Ratings>
           </div>
         </div>
         <div className="principals-box">

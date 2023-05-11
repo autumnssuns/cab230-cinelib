@@ -24,7 +24,6 @@ export function useDetailedMovies({ title, year, page }) {
       ).then((data) => {
         movie.data = data;
         setMoviesDetails((details) => {
-          console.log("Details:", details);
           return {
             ...details,
             [movie.imdbID]: movie.data,
@@ -71,7 +70,6 @@ export function useDetailedMovies({ title, year, page }) {
         setMovies(moviesSearch.data);
         await loadDetails(moviesSearch.data, signal);
     
-        console.log("Movies search:", moviesSearch);
       } catch (error) {
         console.log(error);
         setIsError(true);
@@ -81,7 +79,6 @@ export function useDetailedMovies({ title, year, page }) {
 
     return () => {
       abortController.abort();
-      console.log("Aborted");
     };
   }, []);
 

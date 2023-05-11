@@ -73,7 +73,6 @@ function App() {
       const decoded = jwt(res.bearerToken.token);
       const username = decoded.email;
       const updates = {loggedIn: true, username, ...res};
-      console.log(updates)
       updateUser(updates);
     }).catch((error) => {
       console.log(error);
