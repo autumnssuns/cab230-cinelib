@@ -2,17 +2,16 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCallback, useEffect, useState, useContext, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { getEndpoint } from "../utils/fetchTransform";
-import { CacheContext } from "../contexts/CacheContext";
 import { Link } from "react-router-dom";
 import { MovieDetailsLoader } from "../utils/movieDetailsLoader";
 import MovieCard from "../components/MovieCard/MovieCard";
-import { Rating } from "../components/Rating/Rating";
 import { Separator } from "../components/Separator/Separator";
+import { Ratings } from "../components/Ratings/Ratings";
+import { TbTable, TbListDetails } from "react-icons/tb";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./MoviesPage.css";
 import "./Common.css";
-import { Ratings } from "../components/Ratings/Ratings";
 
 const MIN_YEAR = 1990;
 const MAX_YEAR = new Date().getFullYear();
@@ -29,6 +28,34 @@ function GetEndpointSearchParams(searchParams) {
   );
 }
 
+/**
+ * A component that chooses the display mode for the movies page
+ * (table or cards)
+ * @returns A component that chooses the display mode for the movies page
+ */
+function Switch({searchParams, updateSearchParams}){
+  const displayMode = searchParams.get("display");
+  const setSwitch = (displayMode) => {
+    updateSearchParams({display: displayMode});
+  }
+  return (
+    <div className="switch-container">
+      <div 
+      className={`switch-button ${displayMode === 'grid' ? 'active' : ''}`}
+      onClick={() => setSwitch('grid')}
+      >
+        <TbListDetails />
+      </div>
+      <div 
+        className={`switch-button ${displayMode === 'table' ? 'active' : ''}`}
+        onClick={() => setSwitch('table')}
+        >
+        <TbTable />
+      </div>
+    </div>
+  );
+}
+
 function Table({ searchParams }) {
   const columns = [
     {
@@ -42,22 +69,27 @@ function Table({ searchParams }) {
           </Link>
         );
       },
+      minWidth: 300,
     },
     {
       headerName: "Year",
       field: "year",
+      minWidth: 75,
     },
     {
       headerName: "IMDB Rating",
       field: "imdbRating",
+      minWidth: 100,
     },
     {
       headerName: "Rotten Tomatoes Rating",
       field: "rottenTomatoesRating",
+      minWidth: 100,
     },
     {
       headerName: "Metacritic Rating",
       field: "metacriticRating",
+      minWidth: 100,
     },
     {
       headerName: "Classification",
@@ -70,6 +102,7 @@ function Table({ searchParams }) {
           </span>
         );
       },
+      minWidth: 150,
     },
   ];
 
@@ -135,16 +168,31 @@ function Table({ searchParams }) {
   );
 }
 
-function Details({ searchParams }) {
+function Details({ searchParams, setMessage }) {
   const [movies, setMovies] = useState([]);
   const [details, setDetails] = useState({});
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const detailsLoader = new MovieDetailsLoader(setMovies, setDetails);
+
+  const loadMovies = useCallback(() => {
+    const searchParamsStr = GetEndpointSearchParams(searchParams);
+    setIsLoading(true);
+    getEndpoint(`/movies/search${searchParamsStr}&page=${page}`).then(
+      (data) => {
+        if (!data) return;
+        setMovies(movies => [...movies, ...data.data]);
+        setHasMore(data.pagination.nextPage !== null);
+        setTotal(data.pagination.total);
+        setIsLoading(false);
+      }
+    );
+  }, [searchParams, page]);
 
   useEffect(() => {
     setMovies([]);
@@ -153,17 +201,8 @@ function Details({ searchParams }) {
     setHasMore(false);
     setScrollTop(0);
     setIsLoading(false);
-    
-    const searchParamsStr = GetEndpointSearchParams(searchParams);
-    setIsLoading(true);
-    getEndpoint(`/movies/search${searchParamsStr}&page=${page}`).then(
-      (data) => {
-        if (!data) return;
-        setMovies((movies) => [...movies, ...data.data]);
-        setHasMore(data.pagination.nextPage !== null);
-        setIsLoading(false);
-      }
-    );
+
+    loadMovies();
   }, [searchParams]);
 
   useEffect(() => {
@@ -205,17 +244,12 @@ function Details({ searchParams }) {
   useEffect(() => {
     if (!hasMore) return;
     if (page === 1) return;
-    const searchParamsStr = GetEndpointSearchParams(searchParams);
-    setIsLoading(true);
-    getEndpoint(`/movies/search${searchParamsStr}&page=${page}`).then(
-      (data) => {
-        if (!data) return;
-        setMovies((movies) => [...movies, ...data.data]);
-        setHasMore(data.pagination.nextPage !== null);
-        setIsLoading(false);
-      }
-    );
+    loadMovies();
   }, [page]);
+
+  useEffect(() => {
+    setMessage(`Showing ${movies.length} of ${total} results.`)
+  }, [total]);
 
   return (
     <div id="movies-details-list" className="movies-page-results-container">
@@ -260,7 +294,7 @@ function Details({ searchParams }) {
                         value: movie.metacriticRating,
                       },
                     ]}
-                    radius={25}
+                    radius={40}
                     animate={false}
                   />
                 </div>
@@ -284,12 +318,10 @@ function Details({ searchParams }) {
 
 export default function MoviesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    // If the search params is empty, set the default search params
-    if (searchParams.toString() === "")
-      setSearchParams({ title: "", year: "", display: "table" });
-  }, []);
+  if (searchParams.toString() === "")
+    setSearchParams({ title: "", year: "", display: "grid" });
 
   const updateSearchParams = useCallback(
     (updates) => {
@@ -354,7 +386,6 @@ export default function MoviesPage() {
     <div className="movies-page">
       <div className="movies-page-header">
         <h1>Movies</h1>
-        <em>Mirror mirror on the wall, fetch me the best of them all...</em>
         <div className="movies-page-header-filters">
           <div className="movies-page-header-filter">
             <label>Title</label>
@@ -378,13 +409,20 @@ export default function MoviesPage() {
               onBlur={applyYearFilter}
             />
           </div>
+          <div className="movies-page-header-filter">
+            <label>Display</label>
+            <Switch searchParams={searchParams} updateSearchParams={updateSearchParams} />
+          </div>
+          <div className="movies-page-header-filter">
+            <label>{message}</label>
+          </div>
         </div>
       </div>
       <div id="result-container">
         {searchParams.get("display") === "table" ? (
           <Table searchParams={searchParams} />
         ) : (
-          <Details searchParams={searchParams} />
+          <Details searchParams={searchParams} setMessage={setMessage}/>
         )}
       </div>
     </div>

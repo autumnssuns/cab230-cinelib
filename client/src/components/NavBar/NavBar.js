@@ -111,11 +111,6 @@ export default function NavBar(){
                     Movies
                 </NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink tag={Link} to="/actors/">
-                  Actors
-                </NavLink>
-              </NavItem>
             </Nav>
             {
                 user.loggedIn ? LogoutSection(user.username, onLogout, logoutTarget) : LoginSection(currentUrl)
