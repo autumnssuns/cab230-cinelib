@@ -36,6 +36,7 @@
     backdrop-filter: blur(10px) brightness(0.8);
     border-radius: 0.5rem;
     transform: translateY(0);
+    box-shadow: 0.2rem 0.2rem 0.25rem #000;
     transition: transform 0.2s ease-in-out;
 }
 

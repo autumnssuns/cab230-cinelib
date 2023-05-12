@@ -2,7 +2,7 @@ import './MovieCard.css'
 import CardSpinner from '../CardSpinner/CardSpinner'
 import { useNavigate } from 'react-router-dom'
 
-export default function MovieCard({ movie, details, width = "200px", height = "300px" }) {
+export default function MovieCard({ movie, details, width = "200px", height = "300px", showTitle = true }) {
     const navigate = useNavigate();
     
     return (

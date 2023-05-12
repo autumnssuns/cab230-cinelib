@@ -73,7 +73,6 @@ function App() {
       const decoded = jwt(res.bearerToken.token);
       const username = decoded.email;
       const updates = {loggedIn: true, username, ...res};
-      console.log(updates)
       updateUser(updates);
     }).catch((error) => {
       console.log(error);
@@ -84,7 +83,7 @@ function App() {
     <CacheContext.Provider value={{user, updateUser}}>
       <div className="App">
         <NavBar/>
-        <main>
+        <main className='background-dotted'>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/movies" element={<MoviesPage />} />

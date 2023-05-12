@@ -57,7 +57,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="centering-page background-dotted">
+    <div className="centering-page">
       <div className="shadow-card">
         <div className="shadow-card-content">
           <h1>Login</h1>

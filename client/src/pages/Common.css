@@ -65,3 +65,11 @@
     );
     background-size: 20px 20px;
 }
+
+.gradient-rounded-border {
+    background: linear-gradient(var(--color-background), var(--color-background)) padding-box,
+        linear-gradient(45deg, transparent, var(--color-text), transparent) border-box;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}

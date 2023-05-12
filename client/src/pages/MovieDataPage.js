@@ -4,10 +4,12 @@ import { Badge } from "reactstrap";
 import { AgGridReact } from "ag-grid-react";
 import { ScoreCircle } from "../components/ScoreCircle/ScoreCircle";
 import { getCode } from "../utils/countries";
+import { Rating } from "../components/Rating/Rating";
 import Flag from "react-world-flags";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./MovieDataPage.css";
+import { Ratings } from "../components/Ratings/Ratings";
 
 function formatCurrency(number) {
   if (typeof(number) !== "number" || isNaN(number)) {
@@ -29,38 +31,6 @@ function formatRuntime(runtime) {
   return `${hours}h ${minutes}m`;
 }
 
-function Rating({rating}) {
-  const RATINGS_MAP = {
-    "Internet Movie Database": {
-      max: 10,
-      unit: "",
-    },
-    "Rotten Tomatoes": {
-      max: 100,
-      unit: "%",
-    },
-    "Metacritic": {
-      max: 100,
-      unit: "%",
-    },
-  };
-
-  return (
-    <div className="rating-container">
-      <ScoreCircle
-        score={rating.value}
-        max={RATINGS_MAP[rating.source].max}
-        unit={RATINGS_MAP[rating.source].unit}
-        radius={50}
-        color="#007bff"
-      />
-      <span className="rating-source">
-        {rating.source}
-      </span>
-    </div>
-  );
-}
-
 function Genres({genres}) {
   return (
     <div className="genres-container">
@@ -78,7 +48,6 @@ function Genres({genres}) {
 function Countries({countries}){
   const countryComponents = countries.map((countryName) => {
     const country = getCode(countryName.trim());
-    console.log(country);
     return (
       <div key={countryName} className="country">
         <Flag key={country} code={country} height="16" />
@@ -147,7 +116,6 @@ export default function MovieDataPage() {
       .then((data) => {
         setMovie(data);
         setIsLoading(false);
-        console.log(data);
       });
   }, [imdbID]);
 
@@ -183,20 +151,7 @@ export default function MovieDataPage() {
               <Countries countries={movie.country.split(",")}></Countries>
             </div>
             <div><strong>Box Office</strong>: {formatCurrency(movie.boxoffice)}</div>
-            <div className="ratings-container">
-              <div style={{
-                display: "flex",
-                flexWrap: "wrap"
-              }}>
-                {movie.ratings.filter((rating) => {
-                  return typeof(rating.value) === "number";
-                }).map((rating) => {
-                  return (
-                    <Rating rating={rating} key={rating.source}></Rating>
-                  );
-                })}
-              </div>
-            </div>
+            <Ratings ratings={movie.ratings}></Ratings>
           </div>
         </div>
         <div className="principals-box">
