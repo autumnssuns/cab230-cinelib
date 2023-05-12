@@ -249,7 +249,7 @@ function Details({ searchParams, setMessage }) {
 
   useEffect(() => {
     setMessage(`Showing ${movies.length} of ${total} results.`)
-  }, [total]);
+  }, [movies, total]);
 
   return (
     <div id="movies-details-list" className="movies-page-results-container">
