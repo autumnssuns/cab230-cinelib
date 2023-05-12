@@ -1,8 +1,4 @@
 @media screen and (max-width: 960px) {
-    .movie-data-page > div {
-        flex-direction: column !important;
-    }
-
     .movie-data-container {
         flex-direction: column !important;
     }
@@ -13,6 +9,10 @@
 }
 
 @media screen and (max-width: 1280px) {
+    .movie-data-page > div {
+        flex-direction: column !important;
+    }
+    
     .principals-box{
         height: max(50vh, 500px) !important;
     }
