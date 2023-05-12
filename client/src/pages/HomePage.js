@@ -76,7 +76,7 @@ export default function HomePage(){
       const moviesByYear = getMoviesByYear(movies, year);
       moviesGrids.push(
         <>
-          <h2>{year}</h2>
+          <h2 className='year-label'>{year}</h2>
           <MovieGrid key={year} movies={moviesByYear} details={details}/>
         </>
       );

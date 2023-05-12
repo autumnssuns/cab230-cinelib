@@ -1,8 +1,7 @@
 import MovieCard from "../MovieCard/MovieCard"
 import './MovieGrid.css'
-import { AnimationOnScroll } from 'react-animation-on-scroll';
 
-export default function MovieGrid({movies, details}){
+export default function MovieGrid({movies, details, showTitle=true}){
     return (
         <div className="movie-grid-container">
             {
@@ -11,8 +10,10 @@ export default function MovieGrid({movies, details}){
                         <MovieCard key={movie.imdbID}
                                 movie={movie} 
                                 details={details[movie.imdbID]} 
-                                width="225px" 
-                                height="300px"/>
+                                width="192px" 
+                                height="256px"
+                                showTitle={showTitle}
+                        />
                     )
                 })
             }

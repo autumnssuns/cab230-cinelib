@@ -266,6 +266,7 @@ function Details({ searchParams, setMessage }) {
               details={details[movie.imdbID]}
               width="150px"
               height="225px"
+              showTitle={false}
             />
             <div className="movie-details">
               <div className="movie-header">

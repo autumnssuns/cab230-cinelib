@@ -23,9 +23,9 @@ export default function MovieCard({ movie, details, width = "200px", height = "3
                     }
                 </div>
             }
-            <div className='movie-title'>
+            {showTitle && <div className='movie-title'>
                 {movie.title}
-            </div>
+            </div>}
         </div>
     )
 }

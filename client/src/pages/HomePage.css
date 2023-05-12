@@ -75,3 +75,7 @@
     transform: translateX(-100%);
     transition: transform 0.15s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
+
+.year-label {
+    margin: 0 2rem;
+}

@@ -156,10 +156,6 @@
     cursor: pointer;
 }
 
-.movie-card > .movie-title {
-    display: none;
-}
-
 .movies-page-header {
     display: flex;
     flex-direction: column;
