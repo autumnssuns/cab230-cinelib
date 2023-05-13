@@ -75,10 +75,10 @@ export default function HomePage(){
     for (let year = START_YEAR; year >= END_YEAR; year--) {
       const moviesByYear = getMoviesByYear(movies, year);
       moviesGrids.push(
-        <>
+        <div className='movie-year-grid'>
           <h2 className='year-label'>{year}</h2>
           <MovieGrid key={year} movies={moviesByYear} details={details}/>
-        </>
+        </div>
       );
     }
 

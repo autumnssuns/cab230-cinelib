@@ -37,6 +37,14 @@
     animation: content-fade-in 0.5s cubic-bezier(1,-0.5,.8,1) forwards;
 }
 
+.content-fade-in {
+    animation: content-fade-in 0.5s cubic-bezier(1,-0.5,.8,1) forwards;
+}
+
+.shadow-fade-in {
+    animation: shadow-fade-in 0.25s ease-in-out forwards;
+}
+
 @keyframes content-fade-in {
     from {
         opacity: 0;
