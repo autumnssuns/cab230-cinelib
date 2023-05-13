@@ -56,7 +56,7 @@ function Switch({searchParams, updateSearchParams}){
   );
 }
 
-function Table({ searchParams }) {
+function Table({ searchParams, setMessage }) {
   const columns = [
     {
       headerName: "Title",
@@ -114,6 +114,7 @@ function Table({ searchParams }) {
   const tableGridRef = useRef();
   useEffect(() => {
     console.log("searchParams", searchParams);
+    setMessage("");
     if (!tableGridRef.current) return;
     // Convert only the title and year search params to a string
     const searchParamsStr = GetEndpointSearchParams(searchParams);
@@ -421,7 +422,7 @@ export default function MoviesPage() {
       </div>
       <div id="result-container">
         {searchParams.get("display") === "table" ? (
-          <Table searchParams={searchParams} />
+          <Table searchParams={searchParams} setMessage={setMessage}/>
         ) : (
           <Details searchParams={searchParams} setMessage={setMessage}/>
         )}
