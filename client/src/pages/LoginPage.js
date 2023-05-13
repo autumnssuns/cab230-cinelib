@@ -3,7 +3,6 @@ import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { postEndpoint } from "../utils/fetchTransform";
 import { CacheContext } from "../contexts/CacheContext";
-import { hashPassword } from "../utils/hash";
 import { Separator } from "../components/Separator/Separator";
 
 export function MessageFromParams(searchParams) {
@@ -38,11 +37,10 @@ export default function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const hashedPassword = hashPassword(email, password);
 
     postEndpoint("/user/login", {
       email: email,
-      password: hashedPassword,
+      password: password,
       longExpiry: false,
     })
       .then((res) => {

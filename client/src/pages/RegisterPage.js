@@ -9,7 +9,6 @@ import {
 } from 'reactstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { postEndpoint } from '../utils/fetchTransform';
-import { hashPassword } from '../utils/hash';
 import { Separator } from '../components/Separator/Separator';
 import './Common.css';
 
@@ -24,10 +23,9 @@ export default function RegisterPage(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const hashedPassword = hashPassword(email, password);
         postEndpoint('/user/register', {
             email: email,
-            password: hashedPassword,
+            password: password,
         })
         .then((res) => {
             navigate('/login?redirectUrl=' + redirectUrl);
