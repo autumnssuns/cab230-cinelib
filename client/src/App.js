@@ -13,6 +13,7 @@ import MoviesPage from "./pages/MoviesPage";
 import { postEndpoint } from "./utils/fetchTransform";
 import PersonDataPage from "./pages/PersonDataPage";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { PageNotFound } from "./pages/PageNotFound";
 
 function App() {
   const [sessionExpired, setSessionExpired] = useState(false);
@@ -100,7 +101,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/movies/data/:imdbID" element={<MovieDataPage />} />
             <Route path="/people/:id" element={<PersonDataPage />} />
-            <Route path="*" element={<div>404 Not Found</div>} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </main>
         <Footer />

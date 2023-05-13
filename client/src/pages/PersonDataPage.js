@@ -297,6 +297,11 @@ export default function PersonDataPage() {
             navigate("/login?redirectUrl=/people/" + id);
           }, 1000);
         }
+        if (err.message == "No record exists of a person with this ID") {
+          setTimeout(() => {
+            navigate("/404");
+          }, 1000);
+        }
         if (err.message == "JWT token has expired.") {
           // If Bearer token has expired, refresh the token
           postEndpoint("/user/refresh", {

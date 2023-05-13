@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Badge } from "reactstrap";
 import { AgGridReact } from "ag-grid-react";
@@ -10,6 +10,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./MovieDataPage.css";
 import { Ratings } from "../components/Ratings/Ratings";
+import { getEndpoint } from "../utils/fetchTransform";
 
 function formatCurrency(number) {
   if (typeof(number) !== "number" || isNaN(number)) {
@@ -66,6 +67,7 @@ export default function MovieDataPage() {
   const { imdbID } = useParams();
   const [movie, setMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const defaultColsDef = {
     flex: 1,
@@ -111,12 +113,20 @@ export default function MovieDataPage() {
   ];
 
   useEffect(() => {
-    fetch(`http://sefdb02.qut.edu.au:3000/movies/data/${imdbID}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setMovie(data);
-        setIsLoading(false);
-      });
+    // fetch(`http://sefdb02.qut.edu.au:3000/movies/data/${imdbID}`)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setMovie(data);
+    //     setIsLoading(false);
+    //   });
+    getEndpoint(`/movies/data/${imdbID}`).then((data) => {
+      setMovie(data);
+      setIsLoading(false);
+    }).catch((err) => {
+      if (err.message == "No record exists of a movie with this ID"){
+        navigate("/404");
+      }
+    });
   }, [imdbID]);
 
   if (isLoading) {
