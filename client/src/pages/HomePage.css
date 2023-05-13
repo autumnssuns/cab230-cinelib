@@ -83,3 +83,7 @@
 .year-label {
     margin: 0 2rem;
 }
+
+.movie-year-grid .movie-grid-container {
+    margin: 2rem 0;
+}

@@ -58,8 +58,8 @@ export default function LoginPage() {
 
   return (
     <div className="centering-page">
-      <div className="shadow-card">
-        <div className="shadow-card-content">
+      <div className="shadow-card shadow-fade-in">
+        <div className="shadow-card-content content-fade-in">
           <h1>Login</h1>
           <Separator direction="horizontal" />
           {MessageFromParams(searchParams)}
