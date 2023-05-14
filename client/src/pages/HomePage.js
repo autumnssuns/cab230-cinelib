@@ -1,4 +1,3 @@
-import { useDetailedMovies } from '../hooks/useDetailedMovies';
 import { useState, useEffect, useContext } from 'react';
 import { getEndpoint } from '../utils/fetchTransform';
 import MovieGrid from '../components/MovieGrid/MovieGrid';
@@ -6,6 +5,7 @@ import MoviesBanner from '../components/MoviesBanner/MoviesBanner';
 import { MovieDetailsLoader } from '../utils/movieDetailsLoader';
 import { CacheContext } from '../contexts/CacheContext';
 import "./HomePage.css";
+import { Separator } from '../components/Separator/Separator';
 
 const START_YEAR = 2023;
 const END_YEAR = 2020;
@@ -85,7 +85,11 @@ export default function HomePage(){
     return (
         <>
           <div className="banner curtain-frame">
-            <h2 className="welcome-message overlay-child">Your ultimate movie guide - find all the information about your favorite movies in one place.</h2>
+            <div className="welcome-message overlay-child">
+              <h1 className="title">Welcome to Cine<b className="title-emphasised">Lib</b></h1>
+              <Separator direction='horizontal' width='100%' color='red'/>
+              <h2 className="message">Your ultimate movie library - find all the information about your favorite movies in one place.</h2>
+            </div>
             <MoviesBanner className="overlay-child" movies={movies} details={details} style={{width: "80%"}}/>
             <div className="curtain left overlay-child"></div>
             <div className="curtain right overlay-child"></div>

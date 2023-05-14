@@ -102,10 +102,17 @@ export default function NavBar(){
     return (
         <div id="top-nav-bar" className={show ? "" : "hidden"}>
         <Navbar dark expand="md" fixed='top'>
-          <NavbarBrand tag={Link} to="/">Home</NavbarBrand>
+          <NavbarBrand tag={Link} to="/">
+            Cine<span className='title-emphasised'>Lib</span>
+          </NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             <Nav className="me-auto" navbar>
+              <NavItem>
+                <NavLink tag={Link} to="/">
+                  Home
+                </NavLink>
+              </NavItem>
               <NavItem>
                 <NavLink tag={Link} to="/movies/">
                     Movies

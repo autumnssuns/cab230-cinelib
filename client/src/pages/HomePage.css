@@ -38,6 +38,9 @@
     transition: opacity 0.2s ease-in-out;
     border-radius: 0.5rem;
     box-shadow: 0.2rem 0.2rem 0.2rem #000;
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .overlay-child {
@@ -85,5 +88,9 @@
 }
 
 .movie-year-grid .movie-grid-container {
-    margin: 2rem 0;
+    margin: 2rem;
+}
+
+.message {
+    color: var(--color-text-dark);
 }

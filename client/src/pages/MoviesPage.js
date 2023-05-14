@@ -322,8 +322,16 @@ export default function MoviesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [message, setMessage] = useState("");
 
-  if (searchParams.toString() === "")
-    setSearchParams({ title: "", year: "", display: "grid" });
+  // If a search param is not defined, set it to the default value
+  if (!searchParams.get("year")) {
+    searchParams.set("year", "");
+  }
+  if (!searchParams.get("title")){
+    searchParams.set("title", "");
+  }
+  if (!searchParams.get("display")){
+    searchParams.set("display", "grid");
+  }
 
   const updateSearchParams = useCallback(
     (updates) => {

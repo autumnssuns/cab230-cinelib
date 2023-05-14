@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { postEndpoint } from "../utils/fetchTransform";
@@ -34,6 +34,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [errorMessages, setErrorMessages] = useState(null);
   const { updateUser } = useContext(CacheContext);
+
+  useEffect(() => {
+    // If an email is passed in the URL, pre-populate the email field
+    const email = searchParams.get("email");
+    if (email) {
+      setEmail(email);
+    }
+  }, [searchParams]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
