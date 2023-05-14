@@ -1,15 +1,26 @@
 import { useState, useEffect } from "react";
 import "./ScoreCircle.css";
 
+/**
+ * A component that displays a score in a circle. Used in the rating component.
+ * @param score The score.
+ * @param max The maximum score.
+ * @param unit The unit of the score.
+ * @param radius The radius of the circle. 
+ * @param color The color of the circle.
+ * @param style The style of the circle.
+ * @param animate Whether to animate the circle or not. Default is true.
+ * @returns The score circle component.
+ */
 export function ScoreCircle({ score, max, unit, radius, color, style, animate = true }) {
   const strokeSize = radius / 5;
   const innerRadius = radius - strokeSize;
   const dashArray = Math.PI * innerRadius * 2;
   const targetDashOffset = dashArray * (1 - score / max);
 
-  // const dashOffset = dashArray * (1 - score/max);
   const [dashOffset, setDashOffset] = useState(dashArray);
 
+  // Animate the circle.
   useEffect(() => {
     if (!animate) {
       setDashOffset(targetDashOffset);
@@ -24,6 +35,7 @@ export function ScoreCircle({ score, max, unit, radius, color, style, animate = 
     return () => clearInterval(interval);
   }, []);
 
+  // Use svg to draw the circle. Based on https://www.youtube.com/watch?v=H1W_SeoouAI&t=608s
   return (
     <div className="score-circle-container" style={style}>
       <svg

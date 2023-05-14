@@ -1,7 +1,14 @@
 import { useState, useEffect, useReducer } from "react";
 import jwt from "jwt-decode";
-import { postEndpoint } from "../utils/fetchTransform";
+import { postEndpoint } from "../utils/fetcher";
 
+/**
+ * Handles the authentication of the user and interacts with the
+ * UserContext.
+ * @returns The user object and the updateUser function, along with
+ * the modal-related boolean and functions when the refresh token
+ * is invalid.
+ */
 export function useAuth(){
     const [sessionInvalidated, setSessionInvalidated] = useState(false);
 
@@ -20,7 +27,7 @@ export function useAuth(){
       },
     };
     
-    // UseReducer to allow validated updates to user
+    // UseReducer to allow validation of the updates
     const [user, updateUser] = useReducer((current, updates) => {
       // Ensure that the updates only contain valid keys
       const validKeys = Object.keys(current).filter((key) => key in updates);
@@ -62,8 +69,7 @@ export function useAuth(){
             // Decode the bearer token to get the username
             const decoded = jwt(res.bearerToken.token);
             const username = decoded.email;
-            const updates = { loggedIn: true, username, ...res };
-            updateUser(updates);
+            updateUser({ loggedIn: true, username, ...res });
           })
           .catch((error) => {
             setSessionInvalidated(true);

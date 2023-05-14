@@ -1,157 +1,153 @@
 @media screen and (max-width: 960px) {
-    .movie-data-container {
-        flex-direction: column !important;
-    }
+  .movie-data-container {
+    flex-direction: column !important;
+  }
 
-    .principals-container {
-        width: 100% !important;
-    }
+  .principals-container {
+    width: 100% !important;
+  }
 }
 
 @media screen and (max-width: 1280px) {
-    .movie-data-page > div {
-        flex-direction: column !important;
-    }
-    
-    .principals-box{
-        height: max(50vh, 500px) !important;
-    }
+  .movie-data-page > div {
+    flex-direction: column !important;
+  }
+
+  .principals-box {
+    height: max(50vh, 500px) !important;
+  }
 }
 
 .principals-box {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .principals-container {
-    height: 100%;
+  height: 100%;
 }
 
-
 .movie-data-page {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1rem;
-    background-repeat: no-repeat;
-    background-size: cover;
-    animation: background-pan 240s linear infinite;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  animation: background-pan 240s linear infinite;
 }
 
 @keyframes background-pan {
-    0% {
-        background-position: 0% 0%;
-    }
-    100% {
-        background-position: 100% 100%;
-    }
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
 }
 
 .movie-data-page > div {
-    display: flex;
-    flex-direction: row;
-    padding: 2rem;
-    border-radius: 2rem;
-    backdrop-filter: blur(15px) brightness(0.25);
-    gap: 2rem;
+  display: flex;
+  flex-direction: row;
+  padding: 2rem;
+  border-radius: 2rem;
+  backdrop-filter: blur(15px) brightness(0.25);
+  gap: 2rem;
 }
 
 .movie-data-container {
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    height: 100%;
-    min-width: 60%;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  height: 100%;
+  min-width: 60%;
+  flex-wrap: wrap;
 }
 
 .movie-data-container > img {
-    object-fit: contain;
-    max-width: 100%;
-    filter: drop-shadow(0.25rem 0.25rem 0.2rem var(--color-primary-dark));
+  object-fit: contain;
+  max-width: 100%;
+  filter: drop-shadow(0.25rem 0.25rem 0.2rem var(--color-primary-dark));
 }
 
 .details-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    flex: 1;
-    gap: 0.5rem;
-    max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  flex: 1;
+  gap: 0.5rem;
+  max-width: 100%;
 }
 
 .info-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
 }
 
 .production-container {
-    display: flex;
-    gap: 0.5rem;
-    font-weight: 100;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 0.5rem;
+  font-weight: 100;
+  flex-wrap: wrap;
 }
 
 .production-container strong {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .genres-container {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .countries-container {
-    display: flex;
-    gap: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .time-info-container {
-    display: flex;
-    gap: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .vertical-separator {
-    width: 1px;
-    min-width: 1px;
-    background: linear-gradient(
-        transparent,
-        var(--color-text),
-        transparent
-    );
+  width: 1px;
+  min-width: 1px;
+  background: linear-gradient(transparent, var(--color-text), transparent);
 }
 
 .general-info-container {
-    display: flex;
-    gap: 0.5rem;
-    font-weight: 100;
-    font-size: larger;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 0.5rem;
+  font-weight: 100;
+  font-size: larger;
+  flex-wrap: wrap;
 }
 
 .genre {
-    background: linear-gradient(var(--color-background), var(--color-background)) padding-box,
-                linear-gradient(45deg, transparent, var(--color-text), transparent) border-box;
-    padding: 0.25rem;
-    border-radius: 0.5rem;
-    border: 1px solid transparent;
-    font-size: smaller;
-    font-weight: 500;
+  background: linear-gradient(var(--color-background), var(--color-background))
+      padding-box,
+    linear-gradient(45deg, transparent, var(--color-text), transparent)
+      border-box;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  font-size: smaller;
+  font-weight: 500;
 }
 
 .countries-container {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .country {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }

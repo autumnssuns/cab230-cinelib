@@ -72,6 +72,6 @@ To run the server tests, follow these steps:
 ### Some major challenges faced
 
 - When working with `react-router-dom`, the `useDetailedMovies` hook was still sending requests to the server even when the user was on a different page. This caused unnecessary requests to be sent to the server, causing issues due to the server's rate limiting. 
-  - To fix this, the `fetchTransform` function was added an `signal` parameter, which is used to cancel the request when the user navigates away from the page.
-  - The `useDetailedMovies`'s `useEffect` returned a cleanup function that calls the `abort` method on an `AbortController` instance. The controller's `signal` is passed to all relevant `fetchTransform` calls.
+  - To fix this, the `fetcher` function was added an `signal` parameter, which is used to cancel the request when the user navigates away from the page.
+  - The `useDetailedMovies`'s `useEffect` returned a cleanup function that calls the `abort` method on an `AbortController` instance. The controller's `signal` is passed to all relevant `fetcher` calls.
 

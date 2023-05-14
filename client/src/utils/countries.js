@@ -1,3 +1,7 @@
+/**
+ * The list of countries as a string, retrieved from IMDB:
+ * https://help.imdb.com/article/contribution/other-submission-guides/country-codes/G99K4LFRMSC37DCN#
+ */
 const countriesStr = `af Afghanistan
 ax Åland Islands
 al Albania
@@ -246,14 +250,21 @@ ye Yemen
 zm Zambia
 zw Zimbabwe`;
 
+/**
+ * The list of countries with their codes and names
+ */
 export const countries = countriesStr.split('\n').map(country => {
     const code = country.split(' ')[0].toLowerCase();
     const name = country.split(' ').slice(1).join(' ');
     return { code, name };
 });
 
-console.log(countries);
-
+/**
+ * Get the country code from the country name. Required since IMDB does
+ * not comply with ISO 3166-1 alpha-2 country codes.
+ * @param {string} country The country name
+ * @returns {string} The country code
+ */
 export function getCode(country) {
     return countries.find(c => c.name.toLowerCase() === country.toLowerCase())?.code;
 }

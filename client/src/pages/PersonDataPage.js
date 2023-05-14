@@ -1,7 +1,7 @@
-import { getEndpoint, postEndpoint } from "../utils/fetchTransform";
+import { getEndpoint, postEndpoint } from "../utils/fetcher";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext, useRef, useReducer } from "react";
-import { CacheContext } from "../contexts/CacheContext";
+import { UserContext } from "../contexts/UserContext";
 import { AgGridReact } from "ag-grid-react";
 import { AgChartsReact } from "ag-charts-react";
 import MovieCard from "../components/MovieCard/MovieCard";
@@ -284,7 +284,7 @@ export default function PersonDataPage() {
   const [person, setPerson] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const { user, updateUser } = useContext(CacheContext);
+  const { user, updateUser } = useContext(UserContext);
   const [roles, setRoles] = useState(null);
   const [movies, setMovies] = useState([]);
   const [details, setDetails] = useState({});

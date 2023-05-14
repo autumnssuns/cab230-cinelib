@@ -1,10 +1,16 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { postEndpoint } from "../utils/fetchTransform";
-import { CacheContext } from "../contexts/CacheContext";
+import { postEndpoint } from "../utils/fetcher";
+import { UserContext } from "../contexts/UserContext";
 import { Separator } from "../components/Separator/Separator";
 
+/**
+ * Creates a message to display to the user based on the
+ * redirectUrl parameter in the URL.
+ * @param {*} searchParams The URLSearchParams object.
+ * @returns The message to display to the user.
+ */
 export function MessageFromParams(searchParams) {
   // If the RedirectUrl contains /people/data, show a message
   // that the user needs to login to view the data
@@ -12,7 +18,7 @@ export function MessageFromParams(searchParams) {
   if (redirectUrl.includes("/people/")) {
     return (
       <Alert color="info">
-        This page is only available to members. Please login or{" "}
+        This page is only available to members. Please login or&nbsp;
         <Link to={`/register?redirectUrl=${redirectUrl}`}>register</Link> to
         view the data.
       </Alert>
@@ -21,10 +27,19 @@ export function MessageFromParams(searchParams) {
   return null;
 }
 
+/**
+ * Creates an error message to display to the user.
+ * @param {*} message The error message to display.
+ * @returns The error message to display to the user.
+ */
 export function ErrorMessage(message) {
   return <Alert color="danger">{message}</Alert>;
 }
 
+/**
+ * The login page.
+ * @returns The login page.
+ */
 export default function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -33,16 +48,21 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessages, setErrorMessages] = useState(null);
-  const { updateUser } = useContext(CacheContext);
+  const { updateUser } = useContext(UserContext);
 
+  // If an email is passed in the URL, pre-populate the email field
   useEffect(() => {
-    // If an email is passed in the URL, pre-populate the email field
     const email = searchParams.get("email");
     if (email) {
       setEmail(email);
     }
   }, [searchParams]);
 
+  /**
+   * Handles the submission of the login form.
+   * @param {*} e The event that triggered the submission.
+   * @returns The result of the submission.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -52,8 +72,8 @@ export default function LoginPage() {
       longExpiry: false,
     })
       .then((res) => {
-        const updates = { loggedIn: true, username: email, ...res };
-        updateUser(updates);
+        // Update the user context and redirect to the redirectUrl
+        updateUser({ loggedIn: true, username: email, ...res });
         navigate(redirectUrl);
       })
       .catch((error) => {

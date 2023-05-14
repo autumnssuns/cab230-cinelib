@@ -2,6 +2,10 @@ import "./Common.css";
 import { Separator } from "../components/Separator/Separator";
 import { Link } from "react-router-dom";
 
+/**
+ * The page to display when the user tries to access a page that does not exist.
+ * @returns The page not found page.
+ */
 export function PageNotFound() {
   return (
     <div className="centering-page">

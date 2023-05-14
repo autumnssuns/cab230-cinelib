@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
-import { getEndpoint } from '../utils/fetchTransform';
+import { getEndpoint } from '../utils/fetcher';
 import MovieGrid from '../components/MovieGrid/MovieGrid';
 import MoviesBanner from '../components/MoviesBanner/MoviesBanner';
 import { MovieDetailsLoader } from '../utils/movieDetailsLoader';
-import { CacheContext } from '../contexts/CacheContext';
 import "./HomePage.css";
 import { Separator } from '../components/Separator/Separator';
 
@@ -11,18 +10,27 @@ const START_YEAR = 2023;
 const END_YEAR = 2020;
 const SIZE = 20;
 
+/**
+ * Gets the movies from the specified year.
+ * @param {*} movies The movies array.
+ * @param {*} year The year to get movies from.
+ * @returns The movies from the specified year.
+ */
 function getMoviesByYear(movies, year) {
     return movies.filter((movie) => movie.year === year);
 }
 
+/**
+ * The home page component.
+ * @returns The home page component.
+ */
 export default function HomePage(){
     const [movies, setMovies] = useState([]);
     const [details, setDetails] = useState({});
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     
-    const {user} = useContext(CacheContext);
-    const detailsLoader = new MovieDetailsLoader(setMovies, setDetails, user);
+    const detailsLoader = new MovieDetailsLoader(setMovies, setDetails);
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -34,12 +42,13 @@ export default function HomePage(){
           for (let year = START_YEAR; year >= END_YEAR; year--) {
             const request = getEndpoint(
               `/movies/search?year=${year}&page=1`,
-              user.bearerToken.token,
+              null,
               signal
             );
             requests.push(request);
           }
 
+          // Fetch all movies in parallel and load their details.
           try {
             const responses = await Promise.all(requests);
             const movies = responses.map((response) => response.data.slice(0, SIZE)).flat();
@@ -53,7 +62,6 @@ export default function HomePage(){
             setIsLoading(false);
             console.log(error);
           }
-
         };
 
         fetchMovies();
@@ -71,6 +79,7 @@ export default function HomePage(){
         return <div>Something went wrong...</div>
     }
 
+    // Create a grid for each year.
     const moviesGrids = [];
     for (let year = START_YEAR; year >= END_YEAR; year--) {
       const moviesByYear = getMoviesByYear(movies, year);

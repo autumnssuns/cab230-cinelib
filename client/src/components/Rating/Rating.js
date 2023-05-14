@@ -1,21 +1,31 @@
 import { ScoreCircle } from "../ScoreCircle/ScoreCircle";
 
-export function Rating({rating, radius = 50, animate = true}) {
-    const RATINGS_MAP = {
-      "Internet Movie Database": {
-        max: 10,
-        unit: "",
-      },
-      "Rotten Tomatoes": {
-        max: 100,
-        unit: "%",
-      },
-      "Metacritic": {
-        max: 100,
-        unit: "%",
-      },
-    };
-  
+/**
+ * The constant map of rating sources to their max value and unit.
+ */
+const RATINGS_MAP = {
+  "Internet Movie Database": {
+    max: 10,
+    unit: "",
+  },
+  "Rotten Tomatoes": {
+    max: 100,
+    unit: "%",
+  },
+  "Metacritic": {
+    max: 100,
+    unit: "%",
+  },
+};
+
+/**
+ * A component that displays a rating in a circle.
+ * @param rating The rating object that contains the value and source.
+ * @param radius The radius of the circle. Default is 50px.
+ * @param animate Whether to animate the circle or not. Default is true.
+ * @returns The rating component.
+ */
+export function Rating({rating, radius = 50, animate = true}) {  
     return (
       <div className="rating-container">
         <ScoreCircle
