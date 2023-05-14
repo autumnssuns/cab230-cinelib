@@ -1,4 +1,3 @@
-import { useDetailedMovies } from '../hooks/useDetailedMovies';
 import { useState, useEffect, useContext } from 'react';
 import { getEndpoint } from '../utils/fetchTransform';
 import MovieGrid from '../components/MovieGrid/MovieGrid';
@@ -6,6 +5,7 @@ import MoviesBanner from '../components/MoviesBanner/MoviesBanner';
 import { MovieDetailsLoader } from '../utils/movieDetailsLoader';
 import { CacheContext } from '../contexts/CacheContext';
 import "./HomePage.css";
+import { Separator } from '../components/Separator/Separator';
 
 const START_YEAR = 2023;
 const END_YEAR = 2020;
@@ -75,10 +75,10 @@ export default function HomePage(){
     for (let year = START_YEAR; year >= END_YEAR; year--) {
       const moviesByYear = getMoviesByYear(movies, year);
       moviesGrids.push(
-        <>
+        <div className='movie-year-grid'>
           <h2 className='year-label'>{year}</h2>
           <MovieGrid key={year} movies={moviesByYear} details={details}/>
-        </>
+        </div>
       );
     }
 

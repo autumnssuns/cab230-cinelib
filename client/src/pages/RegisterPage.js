@@ -9,7 +9,6 @@ import {
 } from 'reactstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { postEndpoint } from '../utils/fetchTransform';
-import { hashPassword } from '../utils/hash';
 import { Separator } from '../components/Separator/Separator';
 import './Common.css';
 
@@ -24,13 +23,17 @@ export default function RegisterPage(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const hashedPassword = hashPassword(email, password);
+        if (password !== passwordConfirm) {
+            setErrorMessage('Passwords do not match');
+            setTimeout(() => setErrorMessage(null), 3000);
+            return;
+        }
         postEndpoint('/user/register', {
             email: email,
-            password: hashedPassword,
+            password: password,
         })
         .then((res) => {
-            navigate('/login?redirectUrl=' + redirectUrl);
+            navigate(`/login?redirectUrl=${redirectUrl}&email=${email}`);
             console.log(res);
         }).catch((err) => {
             setErrorMessage(err.message);
@@ -40,8 +43,8 @@ export default function RegisterPage(){
 
     return (
         <div className='centering-page'>
-            <div className='shadow-card'>
-                <div className='shadow-card-content'>
+            <div className='shadow-card shadow-fade-in'>
+                <div className='shadow-card-content content-fade-in'>
                     <h1>Register</h1>
                     <Separator direction='horizontal' />
                     {errorMessage && <Alert color="danger">{errorMessage}</Alert>}

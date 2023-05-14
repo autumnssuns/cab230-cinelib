@@ -6,7 +6,6 @@
     gap: 2rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    margin: 2rem;
 }
 
 .movie-grid-container:hover .movie-card:not(:hover) {

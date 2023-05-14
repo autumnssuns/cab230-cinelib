@@ -1,9 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { postEndpoint } from "../utils/fetchTransform";
 import { CacheContext } from "../contexts/CacheContext";
-import { hashPassword } from "../utils/hash";
 import { Separator } from "../components/Separator/Separator";
 
 export function MessageFromParams(searchParams) {
@@ -36,13 +35,20 @@ export default function LoginPage() {
   const [errorMessages, setErrorMessages] = useState(null);
   const { updateUser } = useContext(CacheContext);
 
+  useEffect(() => {
+    // If an email is passed in the URL, pre-populate the email field
+    const email = searchParams.get("email");
+    if (email) {
+      setEmail(email);
+    }
+  }, [searchParams]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const hashedPassword = hashPassword(email, password);
 
     postEndpoint("/user/login", {
       email: email,
-      password: hashedPassword,
+      password: password,
       longExpiry: false,
     })
       .then((res) => {
@@ -58,8 +64,8 @@ export default function LoginPage() {
 
   return (
     <div className="centering-page">
-      <div className="shadow-card">
-        <div className="shadow-card-content">
+      <div className="shadow-card shadow-fade-in">
+        <div className="shadow-card-content content-fade-in">
           <h1>Login</h1>
           <Separator direction="horizontal" />
           {MessageFromParams(searchParams)}

@@ -40,6 +40,9 @@ export class MovieDetailsLoader {
     
     const DELAY_BEFORE_EACH_FETCH = 1800;
 
+    // Remove invalid movies (null or undefined)
+    movies = movies.filter((movie) => movie);
+
     for (let i = 0; i < movies.length; i++) {
       let delay = i < initialBatchSize ? 0 : DELAY_BEFORE_EACH_FETCH;
       // To avoid overloading, have a long delay after the first 10 fetches.
