@@ -32,7 +32,11 @@ export default function MovieCard({
       {
         <div className="movie-poster-container">
           {details ? (
-            <img className="movie-poster" src={details.poster} />
+            <img
+              className="movie-poster"
+              src={details.poster}
+              alt={`${movie.title} poster`}
+            />
           ) : (
             <CardSpinner size={"100px"} />
           )}

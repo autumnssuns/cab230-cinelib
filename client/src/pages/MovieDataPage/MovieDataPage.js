@@ -117,9 +117,11 @@ export default function MovieDataPage() {
       field: "characters",
       // Render the characters as a comma-separated list
       cellRenderer: (params) => {
-        return params.value.map((character) => {
-          return character;
-        }).join(", ");
+        return params.value
+          .map((character) => {
+            return character;
+          })
+          .join(", ");
       },
       sortable: true,
       filter: true,
@@ -168,7 +170,7 @@ export default function MovieDataPage() {
     >
       <div>
         <div className="movie-data-container">
-          <img src={movie.poster} alt={movie.title} />
+          <img src={movie.poster} alt={`${movie.title} poster`} />
           <div className="details-container">
             <div className="info-container">
               <h1>{movie.title}</h1>

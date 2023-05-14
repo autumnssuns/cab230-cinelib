@@ -27,7 +27,6 @@ async function registerUser(knex, email, password) {
     .where('email', email)
     .first();
 
-  console.log(user);
   // If user exists, throw error
   if (user) {
     throw new Error("User already exists");

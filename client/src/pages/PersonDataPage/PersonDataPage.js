@@ -240,7 +240,6 @@ const columns = [
     headerName: "Characters",
     resizable: true,
     cellRenderer: (params) => {
-      console.log(params.value);
       return params.value.join(", ");
     },
     minWidth: 200,
@@ -266,7 +265,6 @@ function refreshUser(user, updateUser) {
       updateUser({ ...res });
     })
     .catch((error) => {
-      console.log("Error refreshing token: ", error);
       if (error.message === "JWT token has expired") {
         // If the refresh token has expired, refresh the page to trigger
         // the refresh token check in App.js

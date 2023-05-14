@@ -39,7 +39,7 @@ export default function MoviesBanner({ movies, details, style, className }) {
             key={index}
             onClick={() => navigate(`/movies/data/${movie.imdbID}`)}
           >
-            <img src={details[movie.imdbID].poster} />
+            <img src={details[movie.imdbID].poster} alt={movie.title} />
           </div>
         );
       })}

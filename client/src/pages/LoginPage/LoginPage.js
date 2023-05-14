@@ -77,7 +77,6 @@ export default function LoginPage() {
         navigate(redirectUrl);
       })
       .catch((error) => {
-        console.log(error);
         setErrorMessages(error.message);
       });
   };
