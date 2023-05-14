@@ -1,16 +1,13 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Badge } from "reactstrap";
 import { AgGridReact } from "ag-grid-react";
-import { ScoreCircle } from "../components/ScoreCircle/ScoreCircle";
-import { getCode } from "../utils/countries";
-import { Rating } from "../components/Rating/Rating";
+import { getCode } from "../../utils/countries";
+import { Ratings } from "../../components/Ratings/Ratings";
+import { getEndpoint } from "../../utils/fetcher";
 import Flag from "react-world-flags";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./MovieDataPage.css";
-import { Ratings } from "../components/Ratings/Ratings";
-import { getEndpoint } from "../utils/fetcher";
 
 /**
  * Formats a number as a currency.

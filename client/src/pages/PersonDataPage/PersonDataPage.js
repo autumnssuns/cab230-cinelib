@@ -1,16 +1,15 @@
-import { getEndpoint, postEndpoint } from "../utils/fetcher";
+import { getEndpoint, postEndpoint } from "../../utils/fetcher";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext, useRef, useReducer } from "react";
-import { UserContext } from "../contexts/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import { AgGridReact } from "ag-grid-react";
 import { AgChartsReact } from "ag-charts-react";
-import MovieCard from "../components/MovieCard/MovieCard";
+import useMovieDetails from "../../hooks/useMovieDetails";
+import MovieGrid from "../../components/MovieGrid/MovieGrid";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./PersonDataPage.css";
-import useMovieDetails from "../hooks/useMovieDetails";
-import MovieGrid from "../components/MovieGrid/MovieGrid";
-import "./Common.css";
+import "../Common.css";
 
 function useImdbHistogramOptions() {
   return useReducer(

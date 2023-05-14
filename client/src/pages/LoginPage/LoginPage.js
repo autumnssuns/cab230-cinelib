@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { postEndpoint } from "../utils/fetcher";
-import { UserContext } from "../contexts/UserContext";
-import { Separator } from "../components/Separator/Separator";
+import { postEndpoint } from "../../utils/fetcher";
+import { UserContext } from "../../contexts/UserContext";
+import { Separator } from "../../components/Separator/Separator";
 
 /**
  * Creates a message to display to the user based on the

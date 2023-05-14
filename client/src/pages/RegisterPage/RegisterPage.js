@@ -8,9 +8,9 @@ import {
   Alert,
 } from 'reactstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { postEndpoint } from '../utils/fetcher';
-import { Separator } from '../components/Separator/Separator';
-import './Common.css';
+import { postEndpoint } from '../../utils/fetcher';
+import { Separator } from '../../components/Separator/Separator';
+import '../Common.css';
 
 export default function RegisterPage(){
     const [email, setEmail] = useState('');

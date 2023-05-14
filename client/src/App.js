@@ -1,20 +1,18 @@
 import "./App.css";
-import { useReducer, useState, useEffect } from "react";
-import jwt from "jwt-decode";
-import Footer from "./components/Footer/Footer";
-import NavBar from "./components/NavBar/NavBar";
-import HomePage from "./pages/HomePage";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
 import { UserContext } from "./contexts/UserContext";
-import RegisterPage from "./pages/RegisterPage";
-import MovieDataPage from "./pages/MovieDataPage";
-import MoviesPage from "./pages/MoviesPage";
-import { postEndpoint } from "./utils/fetcher";
-import PersonDataPage from "./pages/PersonDataPage";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { PageNotFound } from "./pages/PageNotFound";
 import { useAuth } from "./hooks/useAuth";
+import Footer from "./components/Footer/Footer";
+import NavBar from "./components/NavBar/NavBar";
+import HomePage from "./pages/HomePage/HomePage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import RegisterPage from "./pages/RegisterPage/RegisterPage";
+import MovieDataPage from "./pages/MovieDataPage/MovieDataPage";
+import MoviesPage from "./pages/MoviesPage/MoviesPage";
+import PersonDataPage from "./pages/PersonDataPage/PersonDataPage";
+
 
 /**
  * The modal to display when the user's session (via refresh token) 
@@ -27,7 +25,7 @@ import { useAuth } from "./hooks/useAuth";
 function SessionModal({ isOpen, toggle, cancel }) {
   const location = useLocation();
   const currentUrl = location.pathname;
-  
+
   return (
     <Modal isOpen={isOpen} centered={true}>
       <ModalHeader toggle={cancel}>Session Invalidated</ModalHeader>

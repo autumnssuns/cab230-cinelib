@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
-import { getEndpoint } from '../utils/fetcher';
-import MovieGrid from '../components/MovieGrid/MovieGrid';
-import MoviesBanner from '../components/MoviesBanner/MoviesBanner';
-import { MovieDetailsLoader } from '../utils/movieDetailsLoader';
+import { getEndpoint } from '../../utils/fetcher';
+import MovieGrid from '../../components/MovieGrid/MovieGrid';
+import MoviesBanner from '../../components/MoviesBanner/MoviesBanner';
+import { MovieDetailsLoader } from '../../utils/movieDetailsLoader';
+import { Separator } from '../../components/Separator/Separator';
 import "./HomePage.css";
-import { Separator } from '../components/Separator/Separator';
 
 const START_YEAR = 2023;
 const END_YEAR = 2020;

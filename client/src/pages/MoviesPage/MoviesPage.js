@@ -1,17 +1,17 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useCallback, useEffect, useState, useContext, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
+import useMovieDetails from "../../hooks/useMovieDetails";
 import { AgGridReact } from "ag-grid-react";
-import { getEndpoint } from "../utils/fetcher";
+import { getEndpoint } from "../../utils/fetcher";
 import { Link } from "react-router-dom";
-import MovieCard from "../components/MovieCard/MovieCard";
-import { Separator } from "../components/Separator/Separator";
-import { Ratings } from "../components/Ratings/Ratings";
+import MovieCard from "../../components/MovieCard/MovieCard";
+import { Separator } from "../../components/Separator/Separator";
+import { Ratings } from "../../components/Ratings/Ratings";
 import { TbTable, TbListDetails } from "react-icons/tb";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./MoviesPage.css";
-import "./Common.css";
-import useMovieDetails from "../hooks/useMovieDetails";
+import "../Common.css";
 
 const MIN_YEAR = 1990;
 const MAX_YEAR = new Date().getFullYear();
