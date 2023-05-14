@@ -12,7 +12,7 @@ import useMovieDetails from "../hooks/useMovieDetails";
 import MovieGrid from "../components/MovieGrid/MovieGrid";
 import "./Common.css";
 
-function useImdbHistogramOptions(){
+function useImdbHistogramOptions() {
   return useReducer(
     (current, update) => {
       const newOptions = { ...current, ...update };
@@ -74,7 +74,7 @@ function useImdbHistogramOptions(){
   );
 }
 
-function RatingHistogram({ roles }){
+function RatingHistogram({ roles }) {
   const [options, updateOptions] = useImdbHistogramOptions();
   useEffect(() => {
     updateOptions({
@@ -88,41 +88,41 @@ function RatingHistogram({ roles }){
   );
 }
 
-function ProgressDoughnut({ movies }){
+function ProgressDoughnut({ movies }) {
   const total = movies.length;
   const loaded = movies.filter((movie) => movie.data).length;
 
   const percentage = (value) => `${((value / total) * 100).toFixed()}%`;
   const [options, setOptions] = useState({
     data: [
-      { name: 'Loaded', count: loaded },
-      { name: 'Loading', count: total - loaded },
+      { name: "Loaded", count: loaded },
+      { name: "Loading", count: total - loaded },
     ],
-    theme: 'ag-material-dark',
+    theme: "ag-material-dark",
     title: {
-      text: 'Number of Movies by Genre... Loading Data',
+      text: "Number of Movies by Genre... Loading Data",
     },
     series: [
       {
-        type: 'pie',
-        angleKey: 'count',
-        fills: ['#db2828', '#1f1f1f'],
+        type: "pie",
+        angleKey: "count",
+        fills: ["#db2828", "#1f1f1f"],
         strokeWidth: 0,
         innerRadiusOffset: -20,
         innerLabels: [
           {
             text: percentage(loaded),
-            color: '#db2828',
+            color: "#db2828",
             fontSize: 72,
           },
           {
-            text: 'Loaded',
+            text: "Loaded",
             fontSize: 24,
             margin: 4,
           },
         ],
         innerCircle: {
-          fill: '#1f1f1f',
+          fill: "#1f1f1f",
         },
       },
     ],
@@ -133,8 +133,8 @@ function ProgressDoughnut({ movies }){
       return {
         ...current,
         data: [
-          { name: 'Loaded', count: loaded },
-          { name: 'Loading', count: total - loaded },
+          { name: "Loaded", count: loaded },
+          { name: "Loading", count: total - loaded },
         ],
         series: [
           {
@@ -148,16 +148,18 @@ function ProgressDoughnut({ movies }){
             ],
           },
         ],
-      }
+      };
     });
   }, [loaded, total]);
 
-  return <div className="chart-container">
-    <AgChartsReact options={options} />
-  </div>;
+  return (
+    <div className="chart-container">
+      <AgChartsReact options={options} />
+    </div>
+  );
 }
 
-function GenreCountryDoughnutChart({movies}){
+function GenreCountryDoughnutChart({ movies }) {
   const validMovies = movies.filter((movie) => movie.data);
   if (validMovies.length !== movies.length) {
     return <ProgressDoughnut movies={movies} />;
@@ -180,26 +182,26 @@ function GenreCountryDoughnutChart({movies}){
 
   const fills = [];
   for (let i = 0; i < genreData.length; i++) {
-    const alpha = 1 - (i + 1) / genreData.length
+    const alpha = 1 - (i + 1) / genreData.length;
     fills.push(`rgba(219, 40, 40, ${alpha})`);
   }
   console.log(fills);
 
   const options = {
     data: genreData.sort((a, b) => b.count - a.count),
-    theme : 'ag-material-dark',
+    theme: "ag-material-dark",
     title: {
-      text: 'Number of Movies by Genre',
+      text: "Number of Movies by Genre",
     },
     series: [
       {
-        type: 'pie',
-        angleKey: 'count',
-        calloutLabelKey: 'genre',
-        sectorLabelKey: 'count',
+        type: "pie",
+        angleKey: "count",
+        calloutLabelKey: "genre",
+        sectorLabelKey: "count",
         sectorLabel: {
-          color: 'white',
-          fontWeight: 'bold',
+          color: "white",
+          fontWeight: "bold",
         },
         fills,
         strokeWidth: 0,
@@ -256,11 +258,29 @@ const defaultColDef = {
   flex: 1,
 };
 
+function refreshUser(user, updateUser) {
+  // If Bearer token has expired, refresh the token
+  postEndpoint("/user/refresh", {
+    refreshToken: localStorage.getItem("refreshToken"),
+  })
+    .then((res) => {
+      updateUser({ ...res });
+    })
+    .catch((error) => {
+      console.log("Error refreshing token: ", error);
+      if (error.message === "JWT token has expired") {
+        // If the refresh token has expired, refresh the page to trigger
+        // the refresh token check in App.js
+        window.location.reload();
+      }
+    });
+}
+
 export default function PersonDataPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [options, updateOptions] = useImdbHistogramOptions();
-  
+
   const [person, setPerson] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -270,59 +290,47 @@ export default function PersonDataPage() {
   const [details, setDetails] = useState({});
 
   useEffect(() => {
-    setLoading(true);
-    getEndpoint(`/people/${id}`, user.bearerToken.token)
-      .then((res) => {
-        setPerson(res);
-        setRoles(res.roles);
-        updateOptions({
-          data: res.roles,
-        });
-        setLoading(false);
-        const movies = res.roles.map((role) => {
-          return {
-            imdbID: role.movieId,
-            title: role.movieName,
-            data: null,
-          };
-        });
-        setMovies([...movies]);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.message == "Authorization header ('Bearer token') not found") {
-          // If the user is not logged in, redirect them to the login page
-          // after a small delay
-          setTimeout(() => {
+    const fetchPerson = async () => {
+      setLoading(true);
+      getEndpoint(`/people/${id}`, user.bearerToken.token)
+        .then((res) => {
+          setPerson(res);
+          setRoles(res.roles);
+          updateOptions({
+            data: res.roles,
+          });
+          setLoading(false);
+          const movies = res.roles.map((role) => {
+            return {
+              imdbID: role.movieId,
+              title: role.movieName,
+              data: null,
+            };
+          });
+          setMovies([...movies]);
+        })
+        .catch((err) => {
+          console.log(err);
+          if (
+            err.message == "Authorization header ('Bearer token') not found"
+          ) {
+            // If the user is not logged in, redirect them to the login page
             navigate("/login?redirectUrl=/people/" + id);
-          }, 1000);
-        }
-        if (err.message == "No record exists of a person with this ID") {
-          setTimeout(() => {
+          }
+          if (err.message == "No record exists of a person with this ID") {
             navigate("/404");
-          }, 1000);
-        }
-        if (err.message == "JWT token has expired.") {
-          // If Bearer token has expired, refresh the token
-          postEndpoint("/user/refresh", {
-            refreshToken: localStorage.getItem("refreshToken"),
-          })
-            .then((res) => {
-              updateUser({ ...res });
-            })
-            .catch((error) => {
-              console.log("Error refreshing token: ", error);
-              if (error.message === "JWT token has expired") {
-                // If the refresh token has expired, refresh the page to trigger
-                // the refresh token check in App.js
-                window.location.reload();
-              }
-            });
-        }
-        setError(true);
-        return;
-      });
-  }, [id, user.bearerToken.token]);
+          }
+          if (err.message == "JWT token has expired.") {
+            refreshUser(user, updateUser);
+          }
+          setError(true);
+          return;
+        });
+    };
+    // Wait a small amount of time before fetching the person data to allow
+    // authentication to complete
+    setTimeout(fetchPerson, 500);
+  }, [id, user]);
 
   useMovieDetails(movies, setMovies, setDetails);
 

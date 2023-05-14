@@ -23,12 +23,17 @@ export default function RegisterPage(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (password !== passwordConfirm) {
+            setErrorMessage('Passwords do not match');
+            setTimeout(() => setErrorMessage(null), 3000);
+            return;
+        }
         postEndpoint('/user/register', {
             email: email,
             password: password,
         })
         .then((res) => {
-            navigate('/login?redirectUrl=' + redirectUrl);
+            navigate(`/login?redirectUrl=${redirectUrl}&email=${email}`);
             console.log(res);
         }).catch((err) => {
             setErrorMessage(err.message);
