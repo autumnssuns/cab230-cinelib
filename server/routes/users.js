@@ -11,6 +11,21 @@ function hashPassword(password) {
 
 }
 
+async function createUserTableIfNotExist(knex) {
+  const hasTable = await knex.schema.hasTable('users');
+  if (!hasTable) {
+    return knex.schema.createTable('users', (table) => {
+      table.increments('id').primary();
+      table.string('email').notNullable();
+      table.string('password').notNullable();
+      table.string('bearer_token');
+      table.string('bearer_exp')
+      table.string('refresh_token');
+      table.string('refresh_exp');
+    });
+  }
+}
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -22,6 +37,7 @@ async function registerUser(knex, email, password) {
   if (!email || !password) {
     throw new Error("Request body incomplete, both email and password are required");
   }
+  await createUserTableIfNotExist(knex);
   // Check if user already exists
   const user = await knex('users')
     .where('email', email)
@@ -58,13 +74,13 @@ async function loginUser(knex, email, password, longExpiry = false) {
   const [refreshToken, refreshIat, refreshExp] = createRefreshToken(email, longExpiry);
 
   // Find the user's session in the database
-  const session = await knex('sessions')
+  const session = await knex('users')
     .where('email', email)
     .first();
   
   // If the session exists, update the tokens
   if (session) {
-    await knex('sessions')
+    await knex('users')
       .where('email', email)
       .update({
         bearer_exp: bearerExp,
@@ -72,7 +88,7 @@ async function loginUser(knex, email, password, longExpiry = false) {
       });
   } else {
     // If the session does not exist, create it
-    await knex('sessions')
+    await knex('users')
       .insert({
         email: email,
         bearer_exp: bearerExp,

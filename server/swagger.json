@@ -1,27 +1,91 @@
 {
-  "openapi": "3.0.2",
+  "openapi": "3.0.3",
   "info": {
+    "version": "1.0.0",
     "title": "Movie information API",
-    "description": "This API provides access to publicly available data on a limited number of movies published from the year 1990 from the Internet Movie Database and other sources. The API endpoints and their usage are described in detail below.",
-    "version": "1.0.0"
+    "description": "This API provides access to publicly available data on a limited number of movies published from the year 1990 from the Internet Movie Database and other sources. The API endpoints and their usage are described in detail below."
   },
-  "tags": [
-    {
-      "name": "Movies"
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Enter JWT Bearer token **_only_**"
+      }
     },
-    {
-      "name": "People"
-    },
-    {
-      "name": "Authentication"
+    "schemas": {
+      "InvalidYearFormat": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "message": {
+            "type": "string",
+            "example": "Invalid year format. Format must be yyyy."
+          }
+        }
+      },
+      "MissingAuthHeader": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "message": {
+            "type": "string",
+            "example": "Authorization header ('Bearer token') not found"
+          }
+        }
+      },
+      "TokenExpired": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "message": {
+            "type": "string",
+            "example": "JWT token has expired"
+          }
+        }
+      },
+      "InvalidJWT": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "message": {
+            "type": "string",
+            "example": "Invalid JWT token"
+          }
+        }
+      },
+      "InvalidPageFormat": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "message": {
+            "type": "string",
+            "example": "Invalid page format. page must be a number."
+          }
+        }
+      }
     }
-  ],
+  },
   "paths": {
     "/movies/search": {
       "get": {
         "tags": ["Movies"],
         "description": "Returns a list of movie data. The list is arranged by imdbId, in ascending order.",
-        "operationId": "moviesSearch",
         "parameters": [
           {
             "name": "title",
@@ -57,7 +121,74 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Movies"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "example": "Star Trek: First Contact"
+                          },
+                          "year": {
+                            "type": "integer",
+                            "example": 1996
+                          },
+                          "imdbID": {
+                            "type": "string",
+                            "example": "tt0117731"
+                          },
+                          "imdbRating": {
+                            "type": "number",
+                            "example": 7.6
+                          },
+                          "rottenTomatoesRating": {
+                            "type": "number",
+                            "example": 92
+                          },
+                          "metacriticRating": {
+                            "type": "number",
+                            "example": 71
+                          },
+                          "classification": {
+                            "type": "string",
+                            "example": "PG-13"
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "example": 6
+                        },
+                        "lastPage": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "perPage": {
+                          "type": "number",
+                          "example": 100
+                        },
+                        "currentPage": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "from": {
+                          "type": "number",
+                          "example": 0
+                        },
+                        "to": {
+                          "type": "number",
+                          "example": 6
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -67,22 +198,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "boolean",
-                      "example": true
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/InvalidYearFormat"
                     },
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid year format. Format must be yyyy."
+                    {
+                      "$ref": "#/components/schemas/InvalidPageFormat"
                     }
-                  }
+                  ]
                 }
               }
             }
           },
-          "429":{
+          "429": {
             "description": "Rate limit exceeded.",
             "content": {
               "text/html": {
@@ -93,16 +221,14 @@
               }
             }
           }
-        },
-        "security": [{ "petstore_auth": ["write:pets", "read:pets"] }]
+        }
       }
     },
-
     "/movies/data/{imdbID}": {
       "get": {
         "tags": ["Movies"],
         "description": "Get data for a movie by imdbID",
-        "operationId": "moviesData",
+        "operationId": "getMovieData",
         "parameters": [
           {
             "name": "imdbID",
@@ -120,7 +246,151 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MovieData"
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "Star Trek: First Contact"
+                    },
+                    "year": {
+                      "type": "integer",
+                      "example": 1996
+                    },
+                    "runtime": {
+                      "type": "integer",
+                      "example": 111
+                    },
+                    "genres": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "Action"
+                      },
+                      "example": ["Action", "Adventure", "Drama"]
+                    },
+                    "country": {
+                      "type": "string",
+                      "example": "United States"
+                    },
+                    "principals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "nm0001772"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Patrick Stewart"
+                          },
+                          "category": {
+                            "type": "string",
+                            "example": "actor"
+                          },
+                          "characters": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "example": "Picard"
+                            }
+                          }
+                        },
+                        "required": ["id", "name", "category", "characters"]
+                      },
+                      "example": [
+                        {
+                          "id": "nm0005772",
+                          "category": "cinematographer",
+                          "name": "Matthew F. Leonetti",
+                          "characters": []
+                        },
+                        {
+                          "id": "nm0001772",
+                          "category": "actor",
+                          "name": "Patrick Stewart",
+                          "characters": ["Picard"]
+                        },
+                        {
+                          "id": "nm0000408",
+                          "category": "actor",
+                          "name": "Jonathan Frakes",
+                          "characters": ["Riker"]
+                        },
+                        {
+                          "id": "nm0000653",
+                          "category": "actor",
+                          "name": "Brent Spiner",
+                          "characters": ["Data"]
+                        },
+                        {
+                          "id": "nm0000996",
+                          "category": "actor",
+                          "name": "LeVar Burton",
+                          "characters": ["Geordi"]
+                        },
+                        {
+                          "id": "nm0734472",
+                          "category": "writer",
+                          "name": "Gene Roddenberry",
+                          "characters": []
+                        },
+                        {
+                          "id": "nm0075834",
+                          "category": "writer",
+                          "name": "Rick Berman",
+                          "characters": []
+                        },
+                        {
+                          "id": "nm0103804",
+                          "category": "writer",
+                          "name": "Brannon Braga",
+                          "characters": []
+                        },
+                        {
+                          "id": "nm0601822",
+                          "category": "writer",
+                          "name": "Ronald D. Moore",
+                          "characters": []
+                        },
+                        {
+                          "id": "nm0000025",
+                          "category": "composer",
+                          "name": "Jerry Goldsmith",
+                          "characters": []
+                        }
+                      ]
+                    },
+                    "ratings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "string",
+                            "example": "Internet Movie Database"
+                          },
+                          "value": {
+                            "type": "number",
+                            "example": 7.6
+                          }
+                        }
+                      }
+                    },
+                    "boxoffice": {
+                      "type": "integer",
+                      "example": 92027888
+                    },
+                    "poster": {
+                      "type": "string",
+                      "example": "https://m.media-amazon.com/images/M/MV5BYzMzZmE3MTItODYzYy00YWI5LWFkNWMtZTY5NmU2MDkxYWI1XkEyXkFqcGdeQXVyMjUzOTY1NTc@._V1_SX300.jpg"
+                    },
+                    "plot": {
+                      "type": "string",
+                      "example": "The Borg travel back in time intent on preventing Earth's first contact with an alien species. Captain Picard and his crew pursue them to ensure that Zefram Cochrane makes his maiden flight reaching warp speed."
+                    }
+                  }
                 }
               }
             }
@@ -136,24 +406,11 @@
                       "properties": {
                         "error": {
                           "type": "boolean",
-                          "example": true
+                          "example": "true"
                         },
                         "message": {
                           "type": "string",
                           "example": "Invalid query parameters: year. Query parameters are not permitted."
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "error": {
-                          "type": "boolean",
-                          "example": true
-                        },
-                        "message": {
-                          "type": "string",
-                          "example": "You must supply an imdbID!"
                         }
                       }
                     }
@@ -171,7 +428,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -182,7 +439,7 @@
               }
             }
           },
-          "429":{
+          "429": {
             "description": "Rate limit exceeded.",
             "content": {
               "text/html": {
@@ -196,12 +453,10 @@
         }
       }
     },
-
     "/people/{id}": {
       "get": {
         "tags": ["People"],
         "description": "Get information about a person (actor, writer, director etc.) from their IMDB ID.",
-        "operationId": "people",
         "parameters": [
           {
             "name": "id",
@@ -213,6 +468,11 @@
             }
           }
         ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "An object containing data about that person",
@@ -221,19 +481,46 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "name": {"type": "string", "example": "Patrick Stewart"},
-                    "birthYear": {"type": "integer", "example": 1940},
-                    "deathYear": {"type": "integer", "example": null},
+                    "name": {
+                      "type": "string",
+                      "example": "Patrick Stewart"
+                    },
+                    "birthYear": {
+                      "type": "integer",
+                      "example": 1940
+                    },
+                    "deathYear": {
+                      "type": "integer",
+                      "example": null
+                    },
                     "roles": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                            "movieName": {"type": "string", "example": "Star Trek: First Contact"},
-                            "movieId": {"type": "string", "example": "tt0117731"},
-                            "category": {"type": "string", "example": "actor"},
-                            "characters": {"type": "array", "items": {"type": "string", "example": "Picard"}},
-                            "imdbRating": {"type": "number", "example": 7.6}
+                          "movieName": {
+                            "type": "string",
+                            "example": "Star Trek: First Contact"
+                          },
+                          "movieId": {
+                            "type": "string",
+                            "example": "tt0117731"
+                          },
+                          "category": {
+                            "type": "string",
+                            "example": "actor"
+                          },
+                          "characters": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "example": "Picard"
+                            }
+                          },
+                          "imdbRating": {
+                            "type": "number",
+                            "example": 7.6
+                          }
                         }
                       }
                     }
@@ -253,24 +540,11 @@
                       "properties": {
                         "error": {
                           "type": "boolean",
-                          "example": true
+                          "example": "true"
                         },
                         "message": {
                           "type": "string",
                           "example": "Invalid query parameters: year. Query parameters are not permitted."
-                        }
-                      }
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "error": {
-                          "type": "boolean",
-                          "example": true
-                        },
-                        "message": {
-                          "type": "string",
-                          "example": "You must supply an imdbID!"
                         }
                       }
                     }
@@ -308,7 +582,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -319,7 +593,7 @@
               }
             }
           },
-          "429":{
+          "429": {
             "description": "Rate limit exceeded.",
             "content": {
               "text/html": {
@@ -333,15 +607,13 @@
         }
       }
     },
-
     "/user/register": {
       "post": {
         "tags": ["Authentication"],
         "description": "Creates a new user account. A request body containing the user to be registered must be sent.",
-        "operationId": "userRegister",
         "requestBody": {
-          "required": true,
           "description": "An object containing the email and password of the user to be registered.",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -386,7 +658,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -406,7 +678,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -431,15 +703,13 @@
         }
       }
     },
-
     "/user/login": {
       "post": {
-        "tags": ["Authentication"],
         "description": "Log in to an existing user account. A request body containing the user credentials must be sent. The longExpiry bool is a setting for development use only that makes both tokens expire after a year.",
-        "operationId": "userLogin",
+        "tags": ["Authentication"],
         "requestBody": {
-          "required": true,
           "description": "The credentials of the user to log in.",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -455,7 +725,15 @@
                   },
                   "longExpiry": {
                     "type": "boolean",
-                    "example": false
+                    "example": "false"
+                  },
+                  "bearerExpiresInSeconds": {
+                    "type": "number",
+                    "example": 600
+                  },
+                  "refreshExpiresInSeconds": {
+                    "type": "boolean",
+                    "example": 86400
                   }
                 }
               }
@@ -464,7 +742,7 @@
         },
         "responses": {
           "200": {
-            "description": "User successfully logged in",
+            "description": "Log in successful",
             "content": {
               "application/json": {
                 "schema": {
@@ -482,7 +760,7 @@
                           "example": "Bearer"
                         },
                         "expires_in": {
-                          "type": "integer",
+                          "type": "number",
                           "example": 600
                         }
                       }
@@ -499,7 +777,7 @@
                           "example": "Refresh"
                         },
                         "expires_in": {
-                          "type": "integer",
+                          "type": "number",
                           "example": 86400
                         }
                       }
@@ -518,7 +796,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -538,7 +816,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -563,15 +841,13 @@
         }
       }
     },
-
     "/user/refresh": {
       "post": {
-        "tags": ["Authentication"],
         "description": "Obtain a new bearer token by using a refresh token",
-        "operationId": "userRefresh",
+        "tags": ["Authentication"],
         "requestBody": {
-          "required": true,
           "description": "The refresh token",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -606,7 +882,7 @@
                           "example": "Bearer"
                         },
                         "expires_in": {
-                          "type": "integer",
+                          "type": "number",
                           "example": 600
                         }
                       }
@@ -623,7 +899,7 @@
                           "example": "Refresh"
                         },
                         "expires_in": {
-                          "type": "integer",
+                          "type": "number",
                           "example": 86400
                         }
                       }
@@ -642,7 +918,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -675,17 +951,15 @@
             }
           }
         }
-      }      
+      }
     },
-
     "/user/logout": {
       "post": {
-        "tags": ["Authentication"],
         "description": "Log the user out, invalidating the refresh token",
-        "operationId": "userLogout",
+        "tags": ["Authentication"],
         "requestBody": {
-          "required": true,
           "description": "The refresh token",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -730,7 +1004,7 @@
                   "properties": {
                     "error": {
                       "type": "boolean",
-                      "example": true
+                      "example": "true"
                     },
                     "message": {
                       "type": "string",
@@ -763,194 +1037,6 @@
             }
           }
         }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Movies": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "title": { "type": "string", "example": "Star Trek: First Contact" },
-                "year": { "type": "integer", "example": 1996 },
-                "imdbID": { "type": "string", "example": "tt0117731" },
-                "imdbRating": { "type": "number", "format": "float", "example": 7.6 },
-                "rottenTomatoesRating": { "type": "number", "example": 92 },
-                "metacriticRating": { "type": "number", "example": 71 },
-                "classification": { "type": "string", "example": "PG-13" }
-              }
-            }
-          },
-          "pagination": {
-            "type": "object",
-            "properties": {
-              "total": { "type": "number", "example": 6 },
-              "lastPage": { "type": "number", "example": 1 },
-              "perPage": { "type": "number", "example": 100 },
-              "currentPage": { "type": "number", "example": 1 },
-              "from": { "type": "number", "example": 1 },
-              "to": { "type": "number", "example": 6 }
-            }
-          }
-        }
-      },
-      "MovieData": {
-        "type": "object",
-        "properties": {
-          "title": { "type": "string", "example": "Star Trek: First Contact" },
-          "year": { "type": "integer", "example": 1996 },
-          "runtime": { "type": "integer", "example": 111 },
-          "genres": { "type": "array", "items": { "type": "string", "example": "Action" }, "example": ["Action", "Adventure", "Drama"] },
-          "country": { "type": "string", "example": "United States" },
-          "principals": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "required": true,
-                  "example": "nm0001772"
-                },
-                "name": {
-                  "type": "string",
-                  "required": true,
-                  "example": "Patrick Stewart"
-                },
-                "category": {
-                  "type": "string",
-                  "required": true,
-                  "example": "actor"
-                },
-                "characters": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "example": "Picard"
-                  }
-                }
-              }
-            },
-            "example": [ 
-              { 
-                "id": "nm0005772", 
-                "category": "cinematographer", 
-                "name": "Matthew F. Leonetti", 
-                "characters": [] 
-              }, 
-              { 
-                "id": "nm0001772", 
-                "category": "actor", 
-                "name": "Patrick Stewart", 
-                "characters": [ "Picard" ] 
-              }, 
-              { 
-                "id": "nm0000408", 
-                "category": "actor", 
-                "name": "Jonathan Frakes", 
-                "characters": [ "Riker" ] 
-              }, 
-              { 
-                "id": "nm0000653", 
-                "category": "actor", 
-                "name": "Brent Spiner", 
-                "characters": [ "Data" ] 
-              }, 
-              { 
-                "id": "nm0000996", 
-                "category": "actor", 
-                "name": "LeVar Burton", 
-                "characters": [ "Geordi" ] 
-              }, 
-              { 
-                "id": "nm0734472", 
-                "category": "writer", 
-                "name": "Gene Roddenberry", 
-                "characters": [] 
-              }, 
-              { 
-                "id": "nm0075834", 
-                "category": "writer", 
-                "name": "Rick Berman", 
-                "characters": [] 
-              }, 
-              { 
-                "id": "nm0103804", 
-                "category": "writer", 
-                "name": "Brannon Braga", 
-                "characters": [] 
-              }, 
-              { 
-                "id": "nm0601822", 
-                "category": "writer", 
-                "name": "Ronald D. Moore", 
-                "characters": [] 
-              }, 
-              { 
-                "id": "nm0000025", 
-                "category": "composer", 
-                "name": "Jerry Goldsmith", 
-                "characters": [] 
-              } 
-            ]
-          },
-          "ratings": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "source": { "type": "string", "example": "Internet Movie Database" },
-                "value": { "type": "number", "example": "7.6" }
-              }
-            },
-            "boxoffice": {
-              "type": "integer",
-              "example": 92027888
-            },
-            "poster": {
-              "type": "string",
-              "example": "https://m.media-amazon.com/images/M/MV5BYzMzZmE3MTItODYzYy00YWI5LWFkNWMtZTY5NmU2MDkxYWI1XkEyXkFqcGdeQXVyMjUzOTY1NTc@._V1_SX300.jpg"
-            },
-            "plot": {
-              "type": "string",
-              "example": "The Borg travel back in time intent on preventing Earth's first contact with an alien species. Captain Picard and his crew pursue them to ensure that Zefram Cochrane makes his maiden flight reaching warp speed."
-            }
-          }
-        }
-      },
-      "MissingAuthHeader": {
-        "type": "object",
-        "properties": {
-          "error": { "type": "boolean", "example": true },
-          "message": { "type": "string", "example": "Authorization header ('Bearer token') not found" }
-        }
-      },
-      "TokenExpired": {
-        "type": "object",
-        "properties": {
-          "error": { "type": "boolean", "example": true },
-          "message": { "type": "string", "example": "JWT token has expired" }
-        }
-      },
-      "InvalidJWT": {
-        "type": "object",
-        "properties": {
-          "error": { "type": "boolean", "example": true },
-          "message": { "type": "string", "example": "Invalid JWT token" }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "description": "Enter JWT Bearer token ***only***",
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
       }
     }
   }

@@ -10,6 +10,7 @@ dotenv.config();
 
 var usersRouter = require('./routes/users');
 var moviesRouter = require('./routes/movies');
+var peopleRouter = require('./routes/people');
 
 var app = express();
 
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
 // Setup routes
 app.use('/user', usersRouter);
 app.use('/movies', moviesRouter);
+app.use('/people', peopleRouter);
 // Set up swagger route
 app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument, {
   swaggerOptions: { defaultModelsExpandDepth: -1 }, // Hide the Schemas

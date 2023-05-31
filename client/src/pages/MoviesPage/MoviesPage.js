@@ -158,7 +158,6 @@ function Table({ searchParams, setMessage }) {
                 params.successCallback(movies, pagination.total);
               })
               .catch((err) => {
-                console.log(err);
               });
           },
         };

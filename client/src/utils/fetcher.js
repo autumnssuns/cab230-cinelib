@@ -44,7 +44,6 @@ export async function getEndpoint(
     await addDataToIndexedDB(endpoint, data);
     return data;
   } catch (error) {
-    console.log(error);
     // Throw the error so that the caller can handle it.
     throw error;
   }
@@ -76,7 +75,6 @@ export async function postEndpoint(endpoint, body) {
     }
     return data;
   } catch (error) {
-    console.log(error);
     // Throw the error so that the caller can handle it.
     throw error;
   }
@@ -126,7 +124,6 @@ async function addDataToIndexedDB(endpoint, data) {
   const parts = endpoint.split("/");
   const id = parts[parts.length - 1];
   const base = parts.slice(0, parts.length - 1).join("/");
-  console.log(base);
   switch (base) {
     case "/movies/data":
       return await IndexedDB.Movies.create(id, data);

@@ -34,7 +34,6 @@ export default function RegisterPage(){
         })
         .then((res) => {
             navigate(`/login?redirectUrl=${redirectUrl}&email=${email}`);
-            console.log(res);
         }).catch((err) => {
             setErrorMessage(err.message);
             setTimeout(() => setErrorMessage(null), 3000);

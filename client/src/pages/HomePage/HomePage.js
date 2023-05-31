@@ -60,7 +60,6 @@ export default function HomePage(){
           catch (error) {
             setIsError(true);
             setIsLoading(false);
-            console.log(error);
           }
         };
 
