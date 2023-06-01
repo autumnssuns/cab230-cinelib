@@ -5,6 +5,7 @@ const query = require("../middleware/query");
 const parse = require("../middleware/parse");
 const send = require("../middleware/send");
 const bcrypt = require("bcrypt");
+const authorization = require("../middleware/authorization");
 
 /**
  * Hashes a password using bcrypt
@@ -47,6 +48,10 @@ async function createUserTableIfNotExist(knex) {
       table.string("password").notNullable();
       table.string("refresh_iat");
       table.string("refresh_exp");
+      table.string("first_name");
+      table.string("last_name");
+      table.string("dob");
+      table.string("address");
     });
   }
 }
@@ -187,6 +192,25 @@ async function logout({ knex, refreshToken }) {
   };
 }
 
+async function getUserProfile({ knex, email, authorization}) {
+  const user = await knex("users").where("email", email).first();
+  if (!user) throw {
+    code: 404,
+    message: "User not found"
+  };
+  const basicInfo = {
+    email: user.email,
+    firstName: user.first_name,
+    lastName: user.last_name
+  };
+  console.log(authorization);
+  const authorisedInfo = authorization?.email === email ? {
+    dob: user.dob,
+    address: user.address
+  } : {};
+  return {...basicInfo, ...authorisedInfo};
+}
+
 // JSON-WEB-TOKEN
 function createBearerToken(email, longExpiry, expiry = null) {
   expiry = expiry ? expiry + "s" : longExpiry ? "365d" : "10m";
@@ -290,6 +314,20 @@ router.post(
     };
   }),
   query(logout),
+  send
+);
+
+/* --- GET user profile. --- */
+router.get(
+  "/:email/profile",
+  authorization,
+  parse((req) => {
+    return {
+      email: req.params.email,
+      authorization: req.authorization
+    };
+  }, false),
+  query(getUserProfile, false),
   send
 );
 

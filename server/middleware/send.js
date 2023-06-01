@@ -1,5 +1,5 @@
 module.exports = function (req, res, next) {
-  if (req.error) {
+  if (req.error && !req.results) {
     return res.status(req.error.code).json({ error: true, message: req.error.message });
   }
   else {
