@@ -42,14 +42,16 @@ app.use((req, res, next) => {
   next()
 });
 
+// Set up swagger route
+app.use('/', swaggerUI.serve);
+app.get('/', swaggerUI.setup(swaggerDocument, {
+  swaggerOptions: { defaultModelsExpandDepth: -1 }, // Hide the Schemas
+}))
+
 // Setup routes
 app.use('/user', usersRouter);
 app.use('/movies', moviesRouter);
 app.use('/people', peopleRouter);
-// Set up swagger route
-app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument, {
-  swaggerOptions: { defaultModelsExpandDepth: -1 }, // Hide the Schemas
-}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -64,7 +66,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({ error: true, message: err.status == 404 ? "Page not found!" : "An unexpected error has occurred." });
 
   req.db = knex;
   next()
