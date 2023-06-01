@@ -1,198 +1,264 @@
-var express = require('express');
-var jwt = require('jsonwebtoken');
+var express = require("express");
+var jwt = require("jsonwebtoken");
 var router = express.Router();
-var bcrypt = require('bcrypt');
+const query = require("../middleware/query");
+const parse = require("../middleware/parse");
+const send = require("../middleware/send");
 
 /**
  * Hashes a password using bcrypt
- * @param {*} password 
+ * @param {*} password
  */
-function hashPassword(password) {
-
-}
+function hashPassword(password) {}
 
 async function createUserTableIfNotExist(knex) {
-  const hasTable = await knex.schema.hasTable('users');
+  const hasTable = await knex.schema.hasTable("users");
   if (!hasTable) {
-    return knex.schema.createTable('users', (table) => {
-      table.increments('id').primary();
-      table.string('email').notNullable();
-      table.string('password').notNullable();
-      table.string('bearer_token');
-      table.string('bearer_exp')
-      table.string('refresh_token');
-      table.string('refresh_exp');
+    return knex.schema.createTable("users", (table) => {
+      table.increments("id").primary();
+      table.string("email").notNullable();
+      table.string("password").notNullable();
+      table.string("bearer_token");
+      table.string("bearer_exp");
+      table.string("refresh_token");
+      table.string("refresh_exp");
     });
   }
 }
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get("/", function (req, res, next) {
+  res.send("respond with a resource");
 });
 
-async function registerUser(knex, email, password) {
+async function registerUser({ knex, email, password }) {
   // TODO: Hash password
 
   if (!email || !password) {
-    throw new Error("Request body incomplete, both email and password are required");
+    throw {
+      code: 400,
+      message: "Request body incomplete, both email and password are required",
+    };
   }
   await createUserTableIfNotExist(knex);
   // Check if user already exists
-  const user = await knex('users')
-    .where('email', email)
-    .first();
+  const user = await knex("users").where("email", email).first();
 
   // If user exists, throw error
   if (user) {
-    throw new Error("User already exists");
+    throw {
+      code: 409,
+      message: "User already exists",
+    };
   }
   // If user does not exist, insert user
-  return knex('users')
+  return knex("users")
     .insert({
       email: email,
-      password: password
+      password: password,
+    })
+    .then(() => {
+      return {
+        code: 201,
+        message: "User created",
+      };
     });
 }
 
-async function loginUser(knex, email, password, longExpiry = false) {
+async function loginUser({
+  knex,
+  email,
+  password,
+  longExpiry = false,
+  bearerExpire = 600,
+  refreshExpire = 86400,
+}) {
   // TODO: Hash password
+  console.log(
+    "loginUser",
+    email,
+    password,
+    longExpiry,
+    bearerExpire,
+    refreshExpire
+  );
 
   if (!email || !password) {
-    throw new Error("Request body incomplete, both email and password are required");
+    throw {
+      code: 400,
+      message: "Request body incomplete, both email and password are required",
+    };
   }
   // Check if correct credentials. Throw error if not correct
-  const user = await knex('users')
-    .where('email', email)
-    .where('password', password)
+  const user = await knex("users")
+    .where("email", email)
+    .where("password", password)
     .first();
   if (!user) {
-    throw new Error("Incorrect email or password");
+    throw {
+      code: 401,
+      message: "Incorrect email or password",
+    };
   }
   // Create the tokens
-  const [bearerToken, bearerIat, bearerExp] = createBearerToken(email, longExpiry);
-  const [refreshToken, refreshIat, refreshExp] = createRefreshToken(email, longExpiry);
+  const [bearerToken, bearerIat, bearerExp] = createBearerToken(
+    email,
+    longExpiry,
+    bearerExpire
+  );
+  const [refreshToken, refreshIat, refreshExp] = createRefreshToken(
+    email,
+    longExpiry,
+    refreshExpire
+  );
 
   // Find the user's session in the database
-  const session = await knex('users')
-    .where('email', email)
-    .first();
-  
+  const session = await knex("users").where("email", email).first();
+
   // If the session exists, update the tokens
   if (session) {
-    await knex('users')
-      .where('email', email)
-      .update({
-        bearer_exp: bearerExp,
-        refresh_exp: refreshExp
-      });
+    await knex("users").where("email", email).update({
+      bearer_exp: bearerExp,
+      refresh_exp: refreshExp,
+    });
   } else {
     // If the session does not exist, create it
-    await knex('users')
-      .insert({
-        email: email,
-        bearer_exp: bearerExp,
-        refresh_exp: refreshExp
-      });
+    await knex("users").insert({
+      email: email,
+      bearer_exp: bearerExp,
+      refresh_exp: refreshExp,
+    });
   }
 
   // Return the tokens
   return {
     bearerToken: {
       token: bearerToken,
-      token_type: 'Bearer',
-      expires_in: bearerExp - bearerIat
+      token_type: "Bearer",
+      expires_in: bearerExp - bearerIat,
     },
     refreshToken: {
       token: refreshToken,
-      token_type: 'Bearer',
-      expires_in: refreshExp - refreshIat
-    }
+      token_type: "Refresh",
+      expires_in: refreshExp - refreshIat,
+    },
+  };
+}
+
+async function refresh({ knex, token }) {
+  // Decode the email from the refresh token
+  const { email } = jwt.decode(token);
+  const [bearerToken, bearerIat, bearerExp] = createBearerToken(
+    email,
+    false,
+    null
+  );
+  const [refreshToken, refreshIat, refreshExp] = createRefreshToken(
+    email,
+    false,
+    null
+  );
+
+  return {
+    bearerToken: {
+      token: bearerToken,
+      token_type: "Bearer",
+      expires_in: bearerExp - bearerIat,
+    },
+    refreshToken: {
+      token: refreshToken,
+      token_type: "Refresh",
+      expires_in: refreshExp - refreshIat,
+    },
   };
 }
 
 // JSON-WEB-TOKEN
-function createBearerToken(email, longExpiry) {
+function createBearerToken(email, longExpiry, expiry = null) {
+  expiry = expiry ? expiry + "s" : longExpiry ? "365d" : "10m";
   // Create the token
-  const token = jwt.sign({
-    email: email
-  }, process.env.JWT_SECRET, {
-    expiresIn: longExpiry ? '365d' : '10m'
-  });
+  const token = jwt.sign(
+    {
+      email: email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: expiry,
+    }
+  );
 
   // Get the iat and exp values from the token
-  const {
-    iat,
-    exp
-  } = jwt.decode(token);
+  const { iat, exp } = jwt.decode(token);
 
   return [token, iat, exp];
 }
 
-function createRefreshToken(email, longExpiry) {
+function createRefreshToken(email, longExpiry, expiry = null) {
+  expiry = expiry ? expiry + "s" : longExpiry ? "365d" : "24h";
   // Create the token
-  const token = jwt.sign({
-    email: email
-  }, process.env.JWT_SECRET, {
-    expiresIn: longExpiry ? '365d' : '1d'
-  });
+  const token = jwt.sign(
+    {
+      email: email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: expiry,
+    }
+  );
 
   // Get the iat and exp values from the token
-  const {
-    iat,
-    exp
-  } = jwt.decode(token);
+  const { iat, exp } = jwt.decode(token);
 
   return [token, iat, exp];
 }
 
 /* --- POST register a new user. --- */
-router.post('/register', function(req, res, next) {
-  // Get the email and password from the request
-  const email = req.body.email;
-  const password = req.body.password;
-
-  // Get the knex instance from the request
-  const knex = req.db;
-
-  registerUser(knex, email, password)
-    .then(() => {
-      res.status(201).json({
-        message: 'User created'
-      });
-    }).catch(error => {
-      if (error.message.match('User already exists')) {
-        res.status(409).json({
-          error: true,
-          message: error.message
-        });
-      } else {
-        res.status(400).json({
-          error: true,
-          message: error.message
-        });
-      }
-    });
-});
+router.post(
+  "/register",
+  parse((req) => {
+    return {
+      email: req.body.email,
+      password: req.body.password,
+    };
+  }),
+  query(registerUser),
+  send
+);
 
 /* --- POST login a user. --- */
-router.post('/login', function(req, res, next) {
-  // Get the email and password from the request
-  const email = req.body.email;
-  const password = req.body.password;
+router.post(
+  "/login",
+  parse((req) => {
+    console.log("login", req.body);
+    return {
+      email: req.body.email,
+      password: req.body.password,
+      longExpiry: req.body.longExpiry,
+      bearerExpire: req.body.bearerExpiresInSeconds,
+      refreshExpire: req.body.refreshExpiresInSeconds,
+    };
+  }),
+  query(loginUser),
+  send
+);
 
-  // Get the knex instance from the request
-  const knex = req.db;
+/* --- POST refresh a user's token. --- */
+router.post(
+  "/refresh",
+  parse((req) => {
+    console.log("refresh", req.body);
+    if (!req.body.refreshToken) {
+      throw {
+        code: 400,
+        message: "Request body incomplete, refresh token required",
+      };
+    }
+    return {
+      token: req.body.refreshToken,
+    };
+  }),
+  query(refresh),
+  send
+);
 
-  loginUser(knex, email, password)
-    .then(tokens => {
-      res.status(200).json(tokens);
-    }).catch(error => {
-      const status = error.message.match('Incorrect email or password') ? 401 : 400;
-      res.status(status).json({
-        error: true,
-        message: error.message
-      });
-    });
-});
 module.exports = router;
