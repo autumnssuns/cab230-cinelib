@@ -33,7 +33,7 @@ function searchMovies(knex, title, year, page = 1) {
   let countPromise, dataPromise;
 
   // Count total number of movies
-  countPromise = knex("basics").count("tconst");
+  countPromise = knex("basics").count("tconst as count");
   if (title) {
     countPromise = countPromise.where("primaryTitle", "like", `%${title}%`);
   }
@@ -141,20 +141,29 @@ router.get("/search", function (req, res, next) {
   Promise.all(promises)
     .then((results) => {
       // movies promise results are in the second element
-      const movies = results[1];
+      const movies = results[1].map((movie) => {
+        return {
+          title: movie.title,
+          year: +movie.year,
+          imdbID: movie.imdbID,
+          imdbRating: +movie.imdbRating,
+          rottenTomatoesRating: +movie.rottenTomatoesRating,
+          metacriticRating: +movie.metacriticRating,
+          classification: movie.classification,
+        };
+      });
       // calculate pagination
-      const pagination = {
-        total: results[0][0].count,
-        lastPage: Math.ceil(results[0][0].count / PER_PAGE),
-        perPage: PER_PAGE,
-        currentPage: page,
-        from: offset,
-        to: offset + movies.length,
-      };
-
+      console.log(results[0]);
       res.json({
         data: movies,
-        pagination: pagination,
+        pagination: {
+          total: +results[0][0].count,
+          lastPage: Math.ceil(results[0][0].count / PER_PAGE),
+          perPage: PER_PAGE,
+          currentPage: page,
+          from: offset,
+          to: offset + movies.length,
+        },
       });
     })
     .catch((error) => {

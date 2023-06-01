@@ -1,3 +1,13 @@
 {
-  "REMOTE_API_URL": "http://localhost:3001/"
+  "reporters": [
+    "default",
+    [
+      "./node_modules/jest-html-reporter",
+      {
+        "pageTitle": "Test Report",
+        "outputPath": "report.html"
+      }
+    ]
+  ],
+  "testSequencer": "./sequence.js"
 }
