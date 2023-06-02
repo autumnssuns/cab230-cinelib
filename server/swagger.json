@@ -209,17 +209,6 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Rate limit exceeded.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "example": "Too many requests, please try again later."
-                }
-              }
-            }
           }
         }
       }
@@ -438,17 +427,6 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Rate limit exceeded.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "example": "Too many requests, please try again later."
-                }
-              }
-            }
           }
         }
       }
@@ -592,17 +570,6 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Rate limit exceeded.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "example": "Too many requests, please try again later."
-                }
-              }
-            }
           }
         }
       }
@@ -685,17 +652,6 @@
                       "example": "User already exists"
                     }
                   }
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limit exceeded.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "example": "Too many requests, please try again later."
                 }
               }
             }
@@ -826,17 +782,6 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Rate limit exceeded.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "example": "Too many requests, please try again later."
-                }
-              }
-            }
           }
         }
       }
@@ -938,17 +883,6 @@
                 }
               }
             }
-          },
-          "429": {
-            "description": "Rate limit exceeded.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "example": "Too many requests, please try again later."
-                }
-              }
-            }
           }
         }
       }
@@ -1021,17 +955,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TokenExpired"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limit exceeded.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "example": "Too many requests, please try again later."
                 }
               }
             }
