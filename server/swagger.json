@@ -1038,6 +1038,462 @@
           }
         }
       }
+    },
+    "/user/{email}/profile": {
+      "get": {
+        "description": "Get the user's profile",
+        "tags": ["Profile"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "The user's email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "email"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The user's profile was successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "mike@gmail.com"
+                        },
+                        "firstName": {
+                          "type": "string",
+                          "example": "Michael"
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "example": "Jordan"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "mike@gmail.com"
+                        },
+                        "firstName": {
+                          "type": "string",
+                          "example": "Michael"
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "example": "Jordan"
+                        },
+                        "dob": {
+                          "type": "string",
+                          "example": "1963-02-17"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "123 Fake Street, Springfield"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "Unauthorized, normal user",
+                    "value": {
+                      "email": "mike@gmail.com",
+                      "firstName": "Michael",
+                      "lastName": "Jordan"
+                    }
+                  },
+                  "emptyUnauthorized": {
+                    "summary": "Unauthorized, newly created user",
+                    "value": {
+                      "email": "mike@gmail.com",
+                      "firstName": null,
+                      "lastName": null
+                    }
+                  },
+                  "authorized": {
+                    "summary": "Authorized, normal user",
+                    "value": {
+                      "email": "mike@gmail.com",
+                      "firstName": "Michael",
+                      "lastName": "Jordan",
+                      "dob": "1963-02-17",
+                      "address": "123 Fake Street, Springfield"
+                    }
+                  },
+                  "emptyAuthorized": {
+                    "summary": "Authorized, newly created user",
+                    "value": {
+                      "email": "notmike@gmail.com",
+                      "firstName": null,
+                      "lastName": null,
+                      "dob": null,
+                      "address": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "There are problems with the token. Click on 'Schema' below to see the possible error responses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "JWT token has expired"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid JWT token"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "expired": {
+                    "summary": "JWT token has expired",
+                    "value": {
+                      "error": true,
+                      "message": "JWT token has expired"
+                    }
+                  },
+                  "invalid": {
+                    "summary": "Invalid JWT token",
+                    "value": {
+                      "error": true,
+                      "message": "Invalid JWT token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update the user's profile",
+        "tags": ["Profile"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "The user's email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "email"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "The updates to the user's profile",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "example": "Michael"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "Jordan"
+                  },
+                  "dob": {
+                    "type": "string",
+                    "example": "1963-02-17"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "123 Fake Street, Springfield"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The user's profile was successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "example": "mike@gmail.com"
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "example": "Michael"
+                    },
+                    "lastName": {
+                      "type": "string",
+                      "example": "Jordan"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "example": "1963-02-17"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "123 Fake Street, Springfield"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "There are problems with the token. Click on 'Schema' below to see the possible error responses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "JWT token has expired"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid JWT token"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "expired": {
+                    "summary": "JWT token has expired",
+                    "value": {
+                      "error": true,
+                      "message": "JWT token has expired"
+                    }
+                  },
+                  "invalid": {
+                    "summary": "Invalid JWT token",
+                    "value": {
+                      "error": true,
+                      "message": "Invalid JWT token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the user is not authorized to update this profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There are problems with the request body. Click on 'Schema' below to see the possible error responses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Request body incomplete: firstName, lastName, dob and address are required"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Request body invalid: firstName, lastName, dob and address must be strings only"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid input: dob must be a real date in format YYYY-MM-DD"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "incomplete": {
+                    "summary": "Request body incomplete",
+                    "value": {
+                      "error": true,
+                      "message": "Request body incomplete: firstName, lastName, dob and address are required"
+                    }
+                  },
+                  "invalid": {
+                    "summary": "Request body invalid",
+                    "value": {
+                      "error": true,
+                      "message": "Request body invalid: firstName, lastName, dob and address must be strings only"
+                    }
+                  },
+                  "invalidDOB": {
+                    "summary": "Invalid Date of Birth",
+                    "value": {
+                      "error": true,
+                      "message": "Invalid input: dob must be a real date in format YYYY-MM-DD"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

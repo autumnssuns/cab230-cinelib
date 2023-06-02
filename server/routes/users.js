@@ -299,7 +299,6 @@ router.post(
 router.post(
   "/login",
   parse((req) => {
-    console.log("login", req.body);
     return {
       email: req.body.email,
       password: req.body.password,
@@ -316,7 +315,6 @@ router.post(
 router.post(
   "/refresh",
   parse((req) => {
-    console.log("refresh", req.body);
     if (!req.body.refreshToken) {
       throw {
         code: 400,
@@ -335,7 +333,6 @@ router.post(
 router.post(
   "/logout",
   parse((req) => {
-    console.log("logout", req.body);
     if (!req.body.refreshToken) {
       throw {
         code: 400,
@@ -370,7 +367,6 @@ router.put(
   authorization,
   parse((req) => {
     // Must have all fields
-    console.log(req.body.lastName);
     if (!req.body.firstName || !req.body.lastName || !req.body.dob || !req.body.address) throw {
       code: 400,
       message: "Request body incomplete: firstName, lastName, dob and address are required."
@@ -394,6 +390,5 @@ router.put(
   query(updateUserProfile),
   send
 );
-
 
 module.exports = router;

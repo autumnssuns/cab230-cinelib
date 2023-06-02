@@ -26,7 +26,6 @@ function selectQueryFromMap(map) {
 }
 
 async function searchMovies({ knex, title, year, page = 1 }) {
-  console.log("searchMovies", title, year, page);
   // Year must be yyyy format
   if (year && !year.match(/^\d{4}$/)) {
     throw {
@@ -36,7 +35,6 @@ async function searchMovies({ knex, title, year, page = 1 }) {
   }
   // Page must be a number
   if (isNaN(page)) {
-    console.log("page is NaN");
     throw {
       code: 400,
       message: "Invalid page format. page must be a number.",
@@ -98,37 +96,6 @@ async function searchMovies({ knex, title, year, page = 1 }) {
   });
 }
 
-router.get(
-  "/search",
-  parse((req) => {
-    return {
-      title: req.query.title,
-      year: req.query.year,
-      page: req.query.page || 1,
-    };
-  }),
-  query(searchMovies),
-  send
-);
-
-const MOVIE_DETAILS_MAP = {
-  primaryTitle: "title",
-  year: "year",
-  runtimeMinutes: "runtime",
-  genres: "genres",
-  country: "country",
-  boxoffice: "boxoffice",
-  poster: "poster",
-  plot: "plot",
-  imdbRating: "imdbRating",
-  rottentomatoesRating: "rottenTomatoesRating",
-  metacriticRating: "metacriticRating",
-  nconst: "id",
-  category: "category",
-  name: "name",
-  characters: "characters",
-};
-
 async function getMovieDetails({ knex, imdbID }) {
   const selectFields = selectQueryFromMap(MOVIE_DETAILS_MAP);
   const raw = await knex("basics")
@@ -142,7 +109,7 @@ async function getMovieDetails({ knex, imdbID }) {
     throw {
       code: 404,
       message: "No record exists of a movie with this ID",
-    }
+    };
   }
   return {
     title: raw[0].title,
@@ -155,12 +122,12 @@ async function getMovieDetails({ knex, imdbID }) {
       const characters = row.characters
         .replace(/[\[\]"]+/g, "")
         .split(",")
-        .filter(character => character.length > 0);
+        .filter((character) => character.length > 0);
       return {
         id: row.id,
         category: row.category,
         name: row.name,
-        characters: characters
+        characters: characters,
       };
     }),
     ratings: [
@@ -183,17 +150,55 @@ async function getMovieDetails({ knex, imdbID }) {
   };
 }
 
-router.get("/data/:imdbID", parse(req => {
-  if (Object.keys(req.query).length > 0) {
-    const query = Object.keys(req.query).map(key => key).join(", ");
-    throw {
-      code: 400,
-      message: `Invalid query parameters: ${query}. Query parameters are not permitted.`
+const MOVIE_DETAILS_MAP = {
+  primaryTitle: "title",
+  year: "year",
+  runtimeMinutes: "runtime",
+  genres: "genres",
+  country: "country",
+  boxoffice: "boxoffice",
+  poster: "poster",
+  plot: "plot",
+  imdbRating: "imdbRating",
+  rottentomatoesRating: "rottenTomatoesRating",
+  metacriticRating: "metacriticRating",
+  nconst: "id",
+  category: "category",
+  name: "name",
+  characters: "characters",
+};
+
+router.get(
+  "/search",
+  parse((req) => {
+    return {
+      title: req.query.title,
+      year: req.query.year,
+      page: req.query.page || 1,
+    };
+  }),
+  query(searchMovies),
+  send
+);
+
+router.get(
+  "/data/:imdbID",
+  parse((req) => {
+    if (Object.keys(req.query).length > 0) {
+      const query = Object.keys(req.query)
+        .map((key) => key)
+        .join(", ");
+      throw {
+        code: 400,
+        message: `Invalid query parameters: ${query}. Query parameters are not permitted.`,
+      };
     }
-  }
-  return {
-    imdbID: req.params.imdbID
-  }
-}), query(getMovieDetails), send);
+    return {
+      imdbID: req.params.imdbID,
+    };
+  }),
+  query(getMovieDetails),
+  send
+);
 
 module.exports = router;

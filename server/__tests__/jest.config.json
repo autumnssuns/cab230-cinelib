@@ -16,5 +16,6 @@
       }
     ]
   ],
-  "testSequencer": "./sequence.js"
+  "testSequencer": "./sequence.js",
+  "testRegex": ".*\\.test\\.js$"
 }

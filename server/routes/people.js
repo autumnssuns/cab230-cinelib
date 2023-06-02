@@ -17,27 +17,26 @@ const PERSON_MAP = {
   primaryName: "name",
   birthYear: "birthYear",
   deathYear: "deathYear",
-  primaryTitle:"movieName",
-  "basics.tconst":"movieId",
-  category:"category",
-  characters:"characters",
-  imdbRating:"imdbRating",
-}
+  primaryTitle: "movieName",
+  "basics.tconst": "movieId",
+  category: "category",
+  characters: "characters",
+  imdbRating: "imdbRating",
+};
 
-async function getPersonData({knex, id}){
-  console.log("getPersonData", id);
+async function getPersonData({ knex, id }) {
   const selectFields = selectQueryFromMap(PERSON_MAP);
   const raw = await knex("names")
     .join("principals", "principals.nconst", "names.nconst")
     .join("basics", "principals.tconst", "basics.tconst")
     .select(selectFields)
     .where("names.nconst", id);
-  
+
   if (raw.length === 0) {
     throw {
       code: 404,
       message: "No record exists of a person with this ID",
-    }
+    };
   }
 
   return {
@@ -46,9 +45,9 @@ async function getPersonData({knex, id}){
     deathYear: raw[0].deathYear,
     roles: raw.map((row) => {
       const characters = row.characters
-      .replace(/[\[\]"]+/g, "")
-      .split(",")
-      .filter(character => character.length > 0);
+        .replace(/[\[\]"]+/g, "")
+        .split(",")
+        .filter((character) => character.length > 0);
       return {
         movieName: row.movieName,
         movieId: row.movieId,
@@ -56,21 +55,29 @@ async function getPersonData({knex, id}){
         characters: characters,
         imdbRating: toNumber(row.imdbRating),
       };
-    })
-  }
+    }),
+  };
 }
 
-router.get("/:id", authorization, parse((req) => {
-  if (Object.keys(req.query).length > 0) {
-    const query = Object.keys(req.query).map(key => key).join(", ");
-    throw {
-      code: 400,
-      message: `Invalid query parameters: ${query}. Query parameters are not permitted.`
+router.get(
+  "/:id",
+  authorization,
+  parse((req) => {
+    if (Object.keys(req.query).length > 0) {
+      const query = Object.keys(req.query)
+        .map((key) => key)
+        .join(", ");
+      throw {
+        code: 400,
+        message: `Invalid query parameters: ${query}. Query parameters are not permitted.`,
+      };
     }
-  }
-  return {
-    id: req.params.id,
-  };
-}), query(getPersonData), send)
+    return {
+      id: req.params.id,
+    };
+  }),
+  query(getPersonData),
+  send
+);
 
 module.exports = router;
