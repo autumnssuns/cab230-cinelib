@@ -11,6 +11,7 @@ module.exports = function (req, res, next) {
         jwt.verify(token, process.env.JWT_SECRET);
         req.authorization = jwt.decode(token);
     } catch (e) {
+        console.log(e);
         if (e.name === "TokenExpiredError") req.error = { code: 401, message: "JWT token has expired" }; 
         else req.error = { code: 401, message: "Invalid JWT token" };
     } finally {

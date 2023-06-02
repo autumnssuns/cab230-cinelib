@@ -6,6 +6,7 @@ module.exports = function (query, skipOnError = true) {
     query({ knex: req.db, ...req.queryParams }).then((results) => {
       req.results = results;
     }).catch((error) => {
+      console.log(error);
       req.error = error;
     }).finally(() => {
       next();

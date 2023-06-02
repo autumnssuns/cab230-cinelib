@@ -5,6 +5,7 @@ module.exports = function (parser, skipOnError = true) {
     try {
       req.queryParams = parser(req);
     } catch (error) {
+      console.log(error);
       req.error = error;
     } finally {
       next();

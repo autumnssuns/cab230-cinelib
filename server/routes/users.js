@@ -6,6 +6,7 @@ const parse = require("../middleware/parse");
 const send = require("../middleware/send");
 const bcrypt = require("bcrypt");
 const authorization = require("../middleware/authorization");
+const { toDate } = require("../utils/types");
 
 /**
  * Hashes a password using bcrypt
@@ -211,6 +212,38 @@ async function getUserProfile({ knex, email, authorization}) {
   return {...basicInfo, ...authorisedInfo};
 }
 
+async function updateUserProfile({ knex, email, authorization, firstName, lastName, dob, address }) {
+  const user = await knex("users").where("email", email).first();
+  if (!user) throw {
+    code: 404,
+    message: "User not found"
+  };
+  if (authorization?.email !== email) throw {
+    code: 403,
+    message: "Forbidden"
+  };
+  const update = {};
+  if (firstName) update.first_name = firstName;
+  if (lastName) update.last_name = lastName;
+  if (dob) {
+    const now = new Date();
+    if (dob >= now) throw {
+      code: 400,
+      message: "Invalid input: dob must be a date in the past."
+    };
+    update.dob = dob.toLocaleDateString('en-CA');
+  }
+  if (address) update.address = address;
+  await knex("users").where("email", email).update(update);
+  return {
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    dob: dob.toLocaleDateString('en-CA'),
+    address: address
+  };
+}
+
 // JSON-WEB-TOKEN
 function createBearerToken(email, longExpiry, expiry = null) {
   expiry = expiry ? expiry + "s" : longExpiry ? "365d" : "10m";
@@ -330,5 +363,37 @@ router.get(
   query(getUserProfile, false),
   send
 );
+
+/* --- PUT user profile. --- */
+router.put(
+  "/:email/profile",
+  authorization,
+  parse((req) => {
+    // Must have all fields
+    console.log(req.body.lastName);
+    if (!req.body.firstName || !req.body.lastName || !req.body.dob || !req.body.address) throw {
+      code: 400,
+      message: "Request body incomplete: firstName, lastName, dob and address are required."
+    };
+    // Must be strings
+    if (typeof req.body.firstName !== "string" 
+    || typeof req.body.lastName !== "string" 
+    || typeof req.body.address !== "string") throw {
+      code: 400,
+      message: "Request body invalid: firstName, lastName and address must be strings only."
+    };
+    return {
+      email: req.params.email,
+      authorization: req.authorization,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      dob: toDate(req.body.dob),
+      address: req.body.address
+    };
+  }),
+  query(updateUserProfile),
+  send
+);
+
 
 module.exports = router;
