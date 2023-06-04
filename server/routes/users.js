@@ -287,7 +287,7 @@ async function updateUserProfile({ knex, email, authorization, firstName, lastNa
       code: 400,
       message: "Invalid input: dob must be a date in the past."
     };
-    update.dob = dob.toLocaleDateString('en-CA');
+    update.dob = dob.toLocaleDateString('fr-CA');
   }
   if (address) update.address = address;
   await knex("users").where("email", email).update(update);
