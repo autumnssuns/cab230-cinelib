@@ -293,7 +293,10 @@ async function updateUserProfile({ knex, email, authorization, firstName, lastNa
   await knex("users").where("email", email).update(update);
   return {
     email: email,
-    ...update
+    firstName: firstName,
+    lastName: lastName,
+    dob: dateToStr(dob),
+    address: address
   };
 }
 
