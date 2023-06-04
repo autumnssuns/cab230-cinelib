@@ -293,10 +293,7 @@ async function updateUserProfile({ knex, email, authorization, firstName, lastNa
   await knex("users").where("email", email).update(update);
   return {
     email: email,
-    firstName: firstName,
-    lastName: lastName,
-    dob: dob.toLocaleDateString('en-CA'),
-    address: address
+    ...update
   };
 }
 
