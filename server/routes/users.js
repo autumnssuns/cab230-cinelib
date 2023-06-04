@@ -6,7 +6,7 @@ const parse = require("../middleware/parse");
 const send = require("../middleware/send");
 const bcrypt = require("bcrypt");
 const authorization = require("../middleware/authorization");
-const { toDate } = require("../utils/types");
+const { toDate, dateToStr } = require("../utils/types");
 
 /**
  * Hashes a password using bcrypt with 10 salt rounds
@@ -287,7 +287,7 @@ async function updateUserProfile({ knex, email, authorization, firstName, lastNa
       code: 400,
       message: "Invalid input: dob must be a date in the past."
     };
-    update.dob = dob.toLocaleDateString('fr-CA');
+    update.dob = dateToStr(dob);
   }
   if (address) update.address = address;
   await knex("users").where("email", email).update(update);

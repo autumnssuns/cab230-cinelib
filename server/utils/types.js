@@ -51,7 +51,20 @@ function toDate(str) {
   throw new Error("Invalid date format. Date must be in the format YYYY-MM-DD.");
 }
 
+/**
+ * Converts a date to a string in the format YYYY-MM-DD.
+ * @param date The date to convert
+ * @returns The string representation of the date
+ */
+function dateToStr(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 module.exports = {
   toNumber,
-  toDate
+  toDate,
+  dateToStr
 }
