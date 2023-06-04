@@ -5,7 +5,6 @@ const parse = require("../middleware/parse");
 const send = require("../middleware/send");
 const toNumber = require("../utils/types").toNumber;
 
-/* --- GET movies listing. --- */
 const PER_PAGE = 100;
 
 // Maps the column names from the basics table to the field names in the API
@@ -19,12 +18,25 @@ const BASICS_MAP = {
   rated: "classification",
 };
 
+/**
+ * Converts a map of column names to field names into a select query
+ * @param map Map of column names to field names
+ * @returns An array of strings that can be used in a select query
+ */
 function selectQueryFromMap(map) {
   return Object.keys(map).map((key) => {
     return `${key} as ${map[key]}`;
   });
 }
 
+/**
+ * Search the movies given the query parameters, used by the GET /movies endpoint
+ * @param knex The knex instance
+ * @param title The title of the movie
+ * @param year The year of the movie
+ * @param page The page number
+ * @returns The movies that match the query parameters
+ */
 async function searchMovies({ knex, title, year, page = 1 }) {
   // Year must be yyyy format
   if (year && !year.match(/^\d{4}$/)) {
@@ -56,7 +68,7 @@ async function searchMovies({ knex, title, year, page = 1 }) {
     countPromise = countPromise.where("year", "like", `%${year}%`);
   }
   const selectFields = selectQueryFromMap(BASICS_MAP);
-  // Get movies
+  // Get movies for the current page
   dataPromise = knex("basics")
     .select(selectFields)
     .limit(PER_PAGE)
@@ -96,8 +108,15 @@ async function searchMovies({ knex, title, year, page = 1 }) {
   });
 }
 
+/**
+ * Get the movie details given the imdbID, used by the GET /movies/data/:imdbID endpoint
+ * @param knex The knex instance
+ * @param imdbID The imdbID of the movie
+ * @returns The details of the specified movie
+ */
 async function getMovieDetails({ knex, imdbID }) {
   const selectFields = selectQueryFromMap(MOVIE_DETAILS_MAP);
+  // Get the movie details from the basics table
   const raw = await knex("basics")
     .join("principals", "principals.tconst", "basics.tconst")
     .select(selectFields)
@@ -105,12 +124,10 @@ async function getMovieDetails({ knex, imdbID }) {
     .then((results) => {
       return results;
     });
-  if (raw.length === 0) {
-    throw {
-      code: 404,
-      message: "No record exists of a movie with this ID",
-    };
-  }
+  if (raw.length === 0) throw {
+    code: 404,
+    message: "No record exists of a movie with this ID",
+  };
   return {
     title: raw[0].title,
     year: raw[0].year,
@@ -150,6 +167,7 @@ async function getMovieDetails({ knex, imdbID }) {
   };
 }
 
+// Map of fields to return for the /movies/data/{imdbID} endpoint
 const MOVIE_DETAILS_MAP = {
   primaryTitle: "title",
   year: "year",
@@ -168,6 +186,7 @@ const MOVIE_DETAILS_MAP = {
   characters: "characters",
 };
 
+// GET /movies/search endpoint
 router.get(
   "/search",
   parse((req) => {
@@ -181,6 +200,7 @@ router.get(
   send
 );
 
+// GET /movies/data/:imdbID endpoint
 router.get(
   "/data/:imdbID",
   parse((req) => {

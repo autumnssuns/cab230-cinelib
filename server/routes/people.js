@@ -6,12 +6,18 @@ const parse = require("../middleware/parse");
 const send = require("../middleware/send");
 const toNumber = require("../utils/types").toNumber;
 
+/**
+ * Converts a map of column names to field names into a select query
+ * @param map Map of column names to field names
+ * @returns An array of strings that can be used in a select query
+ */
 function selectQueryFromMap(map) {
   return Object.keys(map).map((key) => {
     return `${key} as ${map[key]}`;
   });
 }
 
+// Maps the column names from the basics table to the field names in the API
 const PERSON_MAP = {
   "names.nconst": "id",
   primaryName: "name",
@@ -24,6 +30,12 @@ const PERSON_MAP = {
   imdbRating: "imdbRating",
 };
 
+/**
+ * Gets the data for a person given their ID
+ * @param knex The knex instance
+ * @param id The ID of the person
+ * @returns The data for the person
+ */
 async function getPersonData({ knex, id }) {
   const selectFields = selectQueryFromMap(PERSON_MAP);
   const raw = await knex("names")
@@ -31,14 +43,12 @@ async function getPersonData({ knex, id }) {
     .join("basics", "principals.tconst", "basics.tconst")
     .select(selectFields)
     .where("names.nconst", id);
-
   if (raw.length === 0) {
     throw {
       code: 404,
       message: "No record exists of a person with this ID",
     };
   }
-
   return {
     name: raw[0].name,
     birthYear: raw[0].birthYear,
@@ -59,6 +69,7 @@ async function getPersonData({ knex, id }) {
   };
 }
 
+// GET /people/:id endpoint
 router.get(
   "/:id",
   authorization,
