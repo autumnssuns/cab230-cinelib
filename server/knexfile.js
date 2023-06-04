@@ -14,7 +14,7 @@ module.exports = {
         connection: {
             host: '127.0.0.1',
             database: 'movies',
-            user: 'cab230',
+            user: 'root',
             password: 'Cab230!'
        }
     }
