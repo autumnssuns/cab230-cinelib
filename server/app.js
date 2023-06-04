@@ -18,8 +18,8 @@ var app = express();
 const swaggerUI = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
-// Set up knex
-const options = require('./knexfile.js');
+// Set up knex based on the environment
+const options = require('./knexfile')[process.env.NODE_ENV || 'development'];
 const knex = require('knex')(options);
 const cors = require('cors');
 
