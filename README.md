@@ -37,7 +37,33 @@ The project has the following folder structure:
   - `docs`: Swagger documentation site
   - `__tests__`: Jest tests
 
-## How to Run
+## How to Run (Local)
+
+### Server
+
+To run the server, follow these steps:
+
+1. Create a MySQL database, with port `3306`, and a user with the following credentials:
+   - Username: `root`
+   - Password: `secret`
+2. Run the SQL script in `server/movies.sql` to create the database schema and populate it with data
+3. Navigate to the `server` folder: `cd server`
+4. Install the dependencies: `npm install`
+5. Start the server: `npm start`
+6. The server will be available at `https://localhost:3001`. Try accessing `https://localhost:3001/` on your browser and allow the connection.
+7. The Swagger documentation site will be available at `https://localhost:3001/`
+
+### Client
+
+To run the client, follow these steps:
+
+1. Navigate to the `client` folder: `cd client`
+2. Install the dependencies: `npm install`
+3. Start the client: `npm start`
+4. The client will be available at `http://localhost:3000`
+
+
+## How to Run (Docker)
 
 To run the application, follow these steps:
 
@@ -49,7 +75,7 @@ To run the application, follow these steps:
 
 The application will be available at `http://localhost:3000`. 
 
-The Swagger documentation site will be available at `http://localhost:3001/api-docs`.
+The Swagger documentation site will be available at `https://localhost:3001/`.
 
 ## How to Test
 

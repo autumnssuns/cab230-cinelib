@@ -43,7 +43,7 @@ export class MovieDetailsLoader {
    * @param {*} abortSignal The abort signal to cancel the fetch.
    */
   loadDetails = async (movies, setMovies, abortSignal, initialBatchSize = 10) => {
-    const DELAY_BEFORE_EACH_FETCH = 1800; // milliseconds
+    const DELAY_BEFORE_EACH_FETCH = 200; // milliseconds
 
     // Remove invalid movies (null or undefined)
     movies = movies.filter((movie) => movie);
